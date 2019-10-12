@@ -2,8 +2,7 @@ package com.ara27.newsfeeder.service.impl;
 
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.service.DetikService;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
+import com.ara27.newsfeeder.util.NewsFeederUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -18,7 +17,7 @@ public class DetikServiceImpl implements DetikService {
     @Override
     public List<Articles> listOfDetikPopularNews() throws IOException {
         List<Articles> detikArticles = new ArrayList<>();
-        Document mostPopularPage = getConn("https://www.detik.com/mostpopular").get();
+        Document mostPopularPage = NewsFeederUtil.getConn("https://www.detik.com/mostpopular").get();
 
         Elements lastUpdateEl = mostPopularPage.getElementsByClass("updates");
         String lastUpdate = lastUpdateEl.text();
@@ -76,11 +75,5 @@ public class DetikServiceImpl implements DetikService {
         articles.setUrl(url);
         articles.setTitle(articleTitle);
         detikArticles.add(articles);
-    }
-
-    private Connection getConn(String url) {
-        Connection connection = Jsoup.connect(url);
-        connection.userAgent("Mozilla");
-        return connection;
     }
 }

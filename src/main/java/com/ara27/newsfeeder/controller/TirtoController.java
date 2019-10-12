@@ -1,7 +1,7 @@
 package com.ara27.newsfeeder.controller;
 
 import com.ara27.newsfeeder.domain.Data;
-import com.ara27.newsfeeder.service.DetikService;
+import com.ara27.newsfeeder.service.TirtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +13,12 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/v1")
-public class DetikController {
-
+public class TirtoController {
     @Autowired
-    DetikService detikService;
+    TirtoService tirtoService;
 
-    @GetMapping("/feedme/detik")
-    public ResponseEntity getDetikMostPopular() throws IOException {
-        return new ResponseEntity<>(new Data(detikService.listOfDetikPopularNews()), HttpStatus.OK);
+    @GetMapping("/feedme/tirto")
+    public ResponseEntity getTirtoPopular() throws IOException {
+        return new ResponseEntity<>(new Data(tirtoService.allTirtoSelectedArticles()), HttpStatus.OK);
     }
 }
