@@ -21,6 +21,11 @@ public class Data {
         this.count = data.size();
     }
 
+    public Data(List data, int count) {
+        this.data = data;
+        this.count = count;
+    }
+
     public List getData() {
         return data;
     }

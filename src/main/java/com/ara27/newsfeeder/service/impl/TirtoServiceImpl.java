@@ -17,13 +17,19 @@ public class TirtoServiceImpl implements TirtoService {
     @Override
     public List<Articles> popularTirtoArticles() throws IOException {
         List<Articles> popularTirto = new ArrayList<>();
-        Document tirtoHomePage = NewsFeederUtil.getConn("https://tirto.id").get();
+        Document tirtoHomePage = NewsFeederUtil.getConn("https://tirto.id/search").get();
 
-        Elements subTopics = tirtoHomePage.getElementsByClass("welcome-title");
-        Element containerSubTopicPopular = subTopicElSelector(subTopics, "populer");
-        if (containerSubTopicPopular != null) {
-            Elements subTopicPopular = containerSubTopicPopular.parent().parent().parent().getElementsByClass("col-md-6 mb-3");
-            subTopicPopular.forEach(content -> addArticles(popularTirto, content, "tirto.id-populer"));
+        Elements elPopularArticles = tirtoHomePage.getElementsByClass("col-md-4 mb-4 news-list-fade");
+        for (Element elPopularArticle : elPopularArticles) {
+            String baseUrl = "https://tirto.id";
+            String url = baseUrl + elPopularArticle.select("div a").last().attributes().get("href");
+            String articleTitle = elPopularArticle.select("div a").last().select("h1").text();
+
+            Articles articles = new Articles();
+            articles.setSource("tirto.id-populer");
+            articles.setUrl(url);
+            articles.setTitle(articleTitle);
+            popularTirto.add(articles);
         }
 
         return popularTirto;

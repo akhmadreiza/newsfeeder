@@ -19,6 +19,6 @@ public class TirtoController {
 
     @GetMapping("/feedme/tirto")
     public ResponseEntity getTirtoPopular() throws IOException {
-        return new ResponseEntity<>(new Data(tirtoService.allTirtoSelectedArticles()), HttpStatus.OK);
+        return new ResponseEntity<>(new Data(tirtoService.popularTirtoArticles()), HttpStatus.OK);
     }
 }

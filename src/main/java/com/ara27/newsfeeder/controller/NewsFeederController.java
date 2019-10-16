@@ -13,11 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +36,7 @@ public class NewsFeederController {
     GmailService gmailService;
 
     @GetMapping("/feedme")
-    @Scheduled(cron = "${feedme.cron}")
-    public ResponseEntity getAll() throws IOException {
-        LOGGER.info("feedme invoked at " + DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now()) + "!");
+    public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail) throws IOException {
         List<Articles> finalList = new ArrayList<>();
         List<Articles> tirto = tirtoArticles();
         List<Articles> detik = detikArticles();
@@ -47,15 +44,36 @@ public class NewsFeederController {
         finalList.addAll(tirto);
         finalList.addAll(detik);
 
+        if (sendEmail) {
+            sendEmail(tirto, detik);
+        }
+
+        return new ResponseEntity<>(new Data(finalList, finalList.size()), HttpStatus.OK);
+    }
+
+    @Scheduled(cron = "${feedme.cron}")
+    private void sendNewsToEmail() throws IOException {
+        LOGGER.info("feedme job invoked!");
+        List<Articles> tirto = tirtoArticles();
+        List<Articles> detik = detikArticles();
+        sendEmail(tirto, detik);
+    }
+
+    private void sendEmail(List<Articles> tirto, List<Articles> detik) throws IOException {
         List<String> recipients = new ArrayList<>();
         recipients.add("reizaarmando@gmail.com");
 
+        LOGGER.info("Start sending email to list of recipients");
+        for (String recipient : recipients) {
+            LOGGER.info(recipient + "\n");
+        }
+
         gmailService.sendNewsEmail(recipients, emailText(tirto, detik));
-        return new ResponseEntity<>(new Data(finalList), HttpStatus.OK);
+        LOGGER.info("Email sent to recipient!");
     }
 
     private List<Articles> tirtoArticles() throws IOException {
-        return tirtoService.allTirtoSelectedArticles();
+        return tirtoService.popularTirtoArticles();
     }
 
     private List<Articles> detikArticles() throws IOException {
@@ -99,7 +117,7 @@ public class NewsFeederController {
         String text = "\n\n" +
                 "";
 
-        text = text + "Dari Tirto.id - https://tirto.id\n\n";
+        text = text + "Populer di Tirto - https://tirto.id\n\n";
         for (Articles articles : tirto) {
             if (articles.getSource().equalsIgnoreCase("tirto.id-populer") ||
                     articles.getSource().equalsIgnoreCase("tirto.id-indept")) {
@@ -110,7 +128,7 @@ public class NewsFeederController {
 
         text = text + "\n";
 
-        text = text + "Dari DETIK - https://detik.com\n\n";
+        text = text + "Populer di Detik - https://detik.com\n\n";
         for (Articles articles : detik) {
             if (articles.getSource().equalsIgnoreCase("detikNews")
                     || articles.getSource().equalsIgnoreCase("detikHot")
