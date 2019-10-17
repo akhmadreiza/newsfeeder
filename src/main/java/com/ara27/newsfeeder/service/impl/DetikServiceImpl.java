@@ -6,18 +6,44 @@ import com.ara27.newsfeeder.util.NewsFeederUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class DetikServiceImpl implements DetikService {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(DetikServiceImpl.class);
+    public static final String DETIK_MOST_POPULAR_URL = "https://www.detik.com/mostpopular";
+
     @Override
     public List<Articles> listOfDetikPopularNews() throws IOException {
         List<Articles> detikArticles = new ArrayList<>();
-        Document mostPopularPage = NewsFeederUtil.getConn("https://www.detik.com/mostpopular").get();
+        Document mostPopularPage = null;
+
+        Long startMillis = System.currentTimeMillis();
+        for (int i = 1; i < 4; i++) {
+            try {
+                LOGGER.info("Attempt " + i + " to get " + DETIK_MOST_POPULAR_URL);
+                mostPopularPage = NewsFeederUtil.getConn(DETIK_MOST_POPULAR_URL).get();
+                LOGGER.info("Success get " + DETIK_MOST_POPULAR_URL + " on attempt number " + i + ".");
+                break;
+            } catch (SocketTimeoutException e) {
+                LOGGER.error("SocketTimeOut on attempt number " + i + ". " + (i < 4 ? "Retrying..." : "Exiting..."));
+                if (i == 3) {
+                    Long endErrorMillis = System.currentTimeMillis();
+                    LOGGER.info("time taken after exception occured: " + (endErrorMillis - startMillis) + "ms");
+                    throw new IOException("Too long waiting for " + DETIK_MOST_POPULAR_URL + " to response.");
+                }
+            }
+        }
+        Long endSuccessMillis = System.currentTimeMillis();
+        LOGGER.info("time taken to get " + DETIK_MOST_POPULAR_URL + " : " + (endSuccessMillis - startMillis) + "ms");
 
         Elements lastUpdateEl = mostPopularPage.getElementsByClass("updates");
         String lastUpdate = lastUpdateEl.text();
