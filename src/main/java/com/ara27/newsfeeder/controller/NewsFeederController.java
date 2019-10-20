@@ -68,7 +68,7 @@ public class NewsFeederController {
             LOGGER.info(recipient + "\n");
         }
 
-        gmailService.sendNewsEmail(recipients, emailText(tirto, detik));
+        gmailService.sendNewsEmailMime(recipients, tirto, detik);
         LOGGER.info("Email sent to recipient!");
     }
 

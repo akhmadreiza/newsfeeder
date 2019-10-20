@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>FeedMe!</title>
+</head>
+<body>
+<div style="margin-left: 5%; margin-right: 5%">
+  <div style="margin-bottom:0; text-align: center;">
+    <h1>Hello from FeedMe!</h1>
+    <p>We are presenting to you the most popular news and article around Indonesia. Because we care about your time.</p>
+  </div>
+
+  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+  <br>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <h3>Apa itu FeedMe?</h3>
+    <p>
+      FeedMe! adalah sebuah layanan yang merangkum berita-berita populer dari berbagai sumber dan menyajikan rangkumannya setiap hari ke alamat email kamu.
+    </p>
+  </div>
+
+  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+  <br>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <h3>Kenapa saya harus berlangganan layanan ini?</h3>
+    <p>
+      Salah satu alasannya adalah, kamu bisa lebih produktif dan tetap up to date!
+    </p>
+    <p>Why?</p>
+    <p>
+      Karena kamu cukup menunggu notifikasi email rangkuman berita dari kami tanpa terus menerus mengakses website berita setiap waktu.
+    </p>
+    <p>
+      Sounds good? Scroll down!
+    </p>
+  </div>
+
+  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+  <br>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <h3>Artikel dan Berita Populer Saat ini</h3>
+    <p>
+      Saat ini, layanan ini merangkum berita dan artikel populer dari dua sumber, yaitu dari <a href="https://www.tirto.id">Tirto</a> dan <a href="https://detik.com">Detik</a>.
+    </p>
+    <p>
+      Kedepannya, kami berkomitmen untuk dapat menyajikan berita dan artikel populer dari sumber lainnya.
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <h3>Dirangkum dari Tirto</h3>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <p th:each="tirto : ${tirtos}">
+      <a th:href="${tirto.getUrl()}" th:text="${tirto.getTitle()}"></a>
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <h3>Dirangkum dari Detik</h3>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <span>Detik News</span>
+    <p th:each="detik : ${detiks}">
+      <a th:href="${detik.getUrl()}"
+         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikNews')}"></a>
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <span>Detik Finance</span>
+    <p th:each="detik : ${detiks}">
+      <a th:href="${detik.getUrl()}"
+         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikFinance')}"></a>
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <span>Detik Hot</span>
+    <p th:each="detik : ${detiks}">
+      <a th:href="${detik.getUrl()}"
+         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikHot')}"></a>
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <span>Detik Inet</span>
+    <p th:each="detik : ${detiks}">
+      <a th:href="${detik.getUrl()}"
+         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikInet')}"></a>
+    </p>
+  </div>
+
+  <div style="margin-bottom:0; text-align: center;">
+    <span>Detik Sport - Sepakbola</span>
+    <p th:each="detik : ${detiks}">
+      <a th:href="${detik.getUrl()}"
+         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikSport-sepakbola')}"></a>
+    </p>
+  </div>
+
+  <br>
+  <br>
+
+  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+  <div style="margin-top:10px; text-align: center;">
+    <span>Thanks and Regards</span>
+    <br>
+    <span>Reiza - FeedMe!</span>
+    <br>
+    <span>Dirangkum pada: </span><span th:text="${message}"></span>
+    <br>
+    <span><a href="#">Subscribe</a> | <a href="#">Unsubscribe</a></span>
+  </div>
+</div>
+</body>
+</html>
