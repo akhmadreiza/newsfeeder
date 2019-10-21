@@ -25,10 +25,9 @@ public class GmailServiceImpl implements GmailService {
     @Autowired
     TemplateEngine templateEngine;
 
-    private String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
-
     @Override
     public void sendNewsEmail(List<String> recipients, String emailContent) {
+        String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
         recipients.forEach(recipient -> {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(recipient);
@@ -40,6 +39,7 @@ public class GmailServiceImpl implements GmailService {
 
     @Override
     public void sendNewsEmailMime(List<String> recipients, List<Articles> tirtos, List<Articles> detiks) {
+        String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
         recipients.forEach(recipient -> {
             MimeMessagePreparator messagePreparator = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
