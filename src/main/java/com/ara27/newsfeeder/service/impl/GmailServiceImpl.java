@@ -48,7 +48,7 @@ public class GmailServiceImpl implements GmailService {
                 Context context = new Context();
                 context.setVariable("message", currDate);
                 context.setVariable("tirtos", tirtos);
-                context.setVariable("detiks", filterNewsSource(detiks, "detikNews", "detikHot", "detikFinance", "detikInet", "detikSport-sepakbola"));
+                context.setVariable("detiks", filterNewsSource(detiks, "detikNews", "detikFinance", "detikInet"));
                 String content = templateEngine.process("mailTemplate", context);
                 messageHelper.setText(content, true);
             };

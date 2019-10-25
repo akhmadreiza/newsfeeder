@@ -8,37 +8,39 @@
   <title>FeedMe!</title>
 </head>
 <body>
-<div style="margin-left: 5%; margin-right: 5%">
-  <div style="margin-bottom:0; text-align: center;">
-    <h1>Hello from FeedMe!</h1>
-    <p>We are presenting to you the most popular news and article around Indonesia. Because we care about your time.</p>
+<div style="font-family: Arial, Helvetica, sans-serif;">
+
+    <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
+
+    <div style="margin-bottom:0; text-align: center; padding: 5% 5%">
+        <h1 style="font-size: 30px; margin-bottom: 0">Hello from FeedMe!</h1>
+        <p style="font-size: 20px; margin: 10px 0px">We are presenting to you the most popular news and article around
+            Indonesia. Because we care about your time.</p>
+  </div>
+
+    <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
+
+  <br>
+
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa itu FeedMe?</h3>
+        <p style="font-size: 20px">
+            <i>FeedMe!</i> adalah sebuah layanan yang merangkum berita-berita populer dari berbagai sumber dan
+            menyajikan rangkumannya setiap hari ke alamat email kamu.
+    </p>
   </div>
 
   <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
 
   <br>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <h3>Apa itu FeedMe?</h3>
-    <p>
-      FeedMe! adalah sebuah layanan yang merangkum berita-berita populer dari berbagai sumber dan menyajikan rangkumannya setiap hari ke alamat email kamu.
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Kenapa saya harus berlangganan layanan ini?</h3>
+        <p style="font-size: 20px">
+            Salah satu alasannya adalah, kamu bisa lebih produktif dan tetap up to date! Why? Karena kamu cukup menunggu
+            notifikasi email rangkuman berita dari kami tanpa terus menerus mengakses website berita setiap waktu.
     </p>
-  </div>
-
-  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
-
-  <br>
-
-  <div style="margin-bottom:0; text-align: center;">
-    <h3>Kenapa saya harus berlangganan layanan ini?</h3>
-    <p>
-      Salah satu alasannya adalah, kamu bisa lebih produktif dan tetap up to date!
-    </p>
-    <p>Why?</p>
-    <p>
-      Karena kamu cukup menunggu notifikasi email rangkuman berita dari kami tanpa terus menerus mengakses website berita setiap waktu.
-    </p>
-    <p>
+        <p style="font-size: 20px">
       Sounds good? Scroll down!
     </p>
   </div>
@@ -47,68 +49,53 @@
 
   <br>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <h3>Artikel dan Berita Populer Saat ini</h3>
-    <p>
-      Saat ini, layanan ini merangkum berita dan artikel populer dari dua sumber, yaitu dari <a href="https://www.tirto.id">Tirto</a> dan <a href="https://detik.com">Detik</a>.
-    </p>
-    <p>
-      Kedepannya, kami berkomitmen untuk dapat menyajikan berita dan artikel populer dari sumber lainnya.
-    </p>
-  </div>
-
-  <div style="margin-bottom:0; text-align: center;">
-    <h3>Dirangkum dari Tirto</h3>
-  </div>
-
-  <div style="margin-bottom:0; text-align: center;">
-    <p th:each="tirto : ${tirtos}">
-      <a th:href="${tirto.getUrl()}" th:text="${tirto.getTitle()}"></a>
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Artikel dan Berita Populer Saat ini</h3>
+        <p style="font-size: 20px">
+            Saat ini, layanan ini merangkum berita dan artikel populer dari dua sumber, yaitu dari <a
+                href="https://www.tirto.id">Tirto</a> dan <a href="https://detik.com">Detik</a>. Kedepannya, kami
+            berkomitmen untuk dapat menyajikan berita dan artikel populer dari sumber lainnya.
     </p>
   </div>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <h3>Dirangkum dari Detik</h3>
+    <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+    <br>
+
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Tirto</h3>
   </div>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <span>Detik News</span>
-    <p th:each="detik : ${detiks}">
-      <a th:href="${detik.getUrl()}"
-         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikNews')}"></a>
-    </p>
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+    <span th:each="tirto : ${tirtos}">
+      <b><p style="font-size: 15px; margin: 15px 0px 0px" th:text="${tirto.getTitle()}"></p></b>
+      <p style="font-size: 15px; margin: 10px 0px 5px" th:text="${tirto.getSubtitle()}"></p>
+      <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${tirto.getUrl()}"
+         th:text="selengkapnya.."></a>
+    </span>
   </div>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <span>Detik Finance</span>
-    <p th:each="detik : ${detiks}">
-      <a th:href="${detik.getUrl()}"
-         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikFinance')}"></a>
-    </p>
+    <br>
+
+    <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+    <br>
+
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Detik</h3>
   </div>
 
-  <div style="margin-bottom:0; text-align: center;">
-    <span>Detik Hot</span>
-    <p th:each="detik : ${detiks}">
-      <a th:href="${detik.getUrl()}"
-         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikHot')}"></a>
-    </p>
-  </div>
-
-  <div style="margin-bottom:0; text-align: center;">
-    <span>Detik Inet</span>
-    <p th:each="detik : ${detiks}">
-      <a th:href="${detik.getUrl()}"
-         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikInet')}"></a>
-    </p>
-  </div>
-
-  <div style="margin-bottom:0; text-align: center;">
-    <span>Detik Sport - Sepakbola</span>
-    <p th:each="detik : ${detiks}">
-      <a th:href="${detik.getUrl()}"
-         th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikSport-sepakbola')}"></a>
-    </p>
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+    <span th:each="detik : ${detiks}">
+      <b><p style="font-size: 15px; margin: 15px 0px 0px" th:text="${detik.getTitle()}"></p></b>
+      <p style="font-size: 15px; margin: 10px 0px 5px" th:text="${detik.getSubtitle()}"></p>
+      <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${detik.getUrl()}"
+         th:text="selengkapnya.."></a>
+    </span>
+        <!--<p th:each="detik : ${detiks}">
+          <a th:href="${detik.getUrl()}"
+             th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikNews')}"></a>
+        </p>-->
   </div>
 
   <br>

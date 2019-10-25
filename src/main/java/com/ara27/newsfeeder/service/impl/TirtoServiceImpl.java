@@ -55,10 +55,39 @@ public class TirtoServiceImpl implements TirtoService {
             articles.setSource("tirto.id-populer");
             articles.setUrl(url);
             articles.setTitle(articleTitle);
+            constructSubtitle(articles);
             popularTirto.add(articles);
         }
 
         return popularTirto;
+    }
+
+    private void constructSubtitle(Articles articles) throws IOException {
+        Document tirtoNewsPage = null;
+
+        Long startMillis = System.currentTimeMillis();
+        for (int i = 1; i < 4; i++) {
+            try {
+                LOGGER.info("Attempt " + i + " to get " + articles.getUrl());
+                tirtoNewsPage = NewsFeederUtil.getConn(articles.getUrl()).get();
+                LOGGER.info("Success get " + articles.getUrl() + " on attempt number " + i + ".");
+                break;
+            } catch (SocketTimeoutException e) {
+                LOGGER.error("SocketTimeOut on attempt number " + i + ". " + (i < 4 ? "Retrying..." : "Exiting..."));
+                if (i == 3) {
+                    Long endErrorMillis = System.currentTimeMillis();
+                    LOGGER.info("time taken after exception occured: " + (endErrorMillis - startMillis) + "ms");
+                    throw new IOException("Too long waiting for " + articles.getUrl() + " to response.");
+                }
+            }
+        }
+        Long endSuccessMillis = System.currentTimeMillis();
+        LOGGER.info("time taken to get " + articles.getUrl() + " : " + (endSuccessMillis - startMillis) + "ms");
+
+        String subtitle = tirtoNewsPage.getElementsByClass("italic ringkasan mb-2").isEmpty() ? null :
+                tirtoNewsPage.getElementsByClass("italic ringkasan mb-2").get(0).text();
+
+        articles.setSubtitle(subtitle);
     }
 
     @Override

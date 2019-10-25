@@ -100,6 +100,42 @@ public class DetikServiceImpl implements DetikService {
         articles.setTimestamp(articleTimeStamp);
         articles.setUrl(url);
         articles.setTitle(articleTitle);
-        detikArticles.add(articles);
+        try {
+            constructSubtitle(articles);
+            detikArticles.add(articles);
+        } catch (Exception e) {
+            LOGGER.error("failed to construct subtitle", e);
+        }
+    }
+
+    private void constructSubtitle(Articles articles) throws IOException {
+        Document detikDetail = null;
+
+        Long startMillis = System.currentTimeMillis();
+        for (int i = 1; i < 4; i++) {
+            try {
+                LOGGER.info("Attempt " + i + " to get " + articles.getUrl());
+                detikDetail = NewsFeederUtil.getConn(articles.getUrl()).get();
+                LOGGER.info("Success get " + articles.getUrl() + " on attempt number " + i + ".");
+                break;
+            } catch (SocketTimeoutException e) {
+                LOGGER.error("SocketTimeOut on attempt number " + i + ". " + (i < 4 ? "Retrying..." : "Exiting..."));
+                if (i == 3) {
+                    Long endErrorMillis = System.currentTimeMillis();
+                    LOGGER.info("time taken after exception occured: " + (endErrorMillis - startMillis) + "ms");
+                    throw new IOException("Too long waiting for " + articles.getUrl() + " to response.");
+                }
+            }
+        }
+        Long endSuccessMillis = System.currentTimeMillis();
+        LOGGER.info("time taken to get " + articles.getUrl() + " : " + (endSuccessMillis - startMillis) + "ms");
+
+        Elements lastUpdateEl = detikDetail.getElementsByClass("itp_bodycontent detail_text");
+        String fullContent = lastUpdateEl.get(0).text();
+        String[] contentSplitByFullStop = fullContent.split("\\.");
+        String firstSentences = contentSplitByFullStop[0];
+        String secondSentences = contentSplitByFullStop[1];
+        String first2Sentences = firstSentences + ". " + secondSentences + ".";
+        articles.setSubtitle(first2Sentences);
     }
 }
