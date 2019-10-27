@@ -2,6 +2,8 @@ package com.ara27.newsfeeder.service.impl;
 
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.service.GmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class GmailServiceImpl implements GmailService {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(GmailServiceImpl.class);
 
     @Autowired
     JavaMailSender javaMailSender;
@@ -41,6 +45,7 @@ public class GmailServiceImpl implements GmailService {
     public void sendNewsEmailMime(List<String> recipients, List<Articles> tirtos, List<Articles> detiks) {
         String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
         recipients.forEach(recipient -> {
+            LOGGER.info("[sendNewsEmailMime] recipient: " + recipient);
             MimeMessagePreparator messagePreparator = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setTo(recipient);

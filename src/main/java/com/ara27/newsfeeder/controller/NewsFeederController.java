@@ -2,9 +2,11 @@ package com.ara27.newsfeeder.controller;
 
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.domain.Data;
+import com.ara27.newsfeeder.entity.UserEntity;
 import com.ara27.newsfeeder.service.DetikService;
 import com.ara27.newsfeeder.service.GmailService;
 import com.ara27.newsfeeder.service.TirtoService;
+import com.ara27.newsfeeder.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class NewsFeederController {
     @Autowired
     GmailService gmailService;
 
+    @Autowired
+    UserService userService;
+
     @GetMapping("/feedme")
     public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail) throws IOException {
         List<Articles> finalList = new ArrayList<>();
@@ -60,16 +65,25 @@ public class NewsFeederController {
     }
 
     private void sendEmail(List<Articles> tirto, List<Articles> detik) throws IOException {
-        List<String> recipients = new ArrayList<>();
-        recipients.add("reizaarmando@gmail.com");
+        List<String> recipients = getAllRecipients();
+        /*recipients.add("reizaarmando@gmail.com");*/
 
         LOGGER.info("Start sending email to list of recipients");
         for (String recipient : recipients) {
-            LOGGER.info(recipient + "\n");
+            LOGGER.info(recipient);
         }
 
         gmailService.sendNewsEmailMime(recipients, tirto, detik);
-        LOGGER.info("Email sent to recipient!");
+        LOGGER.info("Email sent to recipients!");
+    }
+
+    private List<String> getAllRecipients() {
+        List<UserEntity> allUsers = userService.getAllSubscriber();
+        List<String> emails = new ArrayList<>();
+        allUsers.forEach(userEntity -> {
+            emails.add(userEntity.getEmailAddress());
+        });
+        return emails;
     }
 
     private List<Articles> tirtoArticles() throws IOException {
