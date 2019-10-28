@@ -5,6 +5,7 @@ import com.ara27.newsfeeder.service.GmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -22,6 +23,15 @@ import java.util.List;
 public class GmailServiceImpl implements GmailService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GmailServiceImpl.class);
+
+    @Value("${feedme.application.url}")
+    String baseUrl;
+
+    @Value("${feedme.subscribe.url}")
+    String subscribeUrl;
+
+    @Value("${feedme.unsubscribe.url}")
+    String unsubscribeUrl;
 
     @Autowired
     JavaMailSender javaMailSender;
@@ -54,6 +64,8 @@ public class GmailServiceImpl implements GmailService {
                 context.setVariable("message", currDate);
                 context.setVariable("tirtos", tirtos);
                 context.setVariable("detiks", filterNewsSource(detiks, "detikNews", "detikFinance", "detikInet"));
+                context.setVariable("subscribeUrl", baseUrl + subscribeUrl + recipient);
+                context.setVariable("unsubscribeUrl", baseUrl + unsubscribeUrl + recipient);
                 String content = templateEngine.process("mailTemplate", context);
                 messageHelper.setText(content, true);
             };

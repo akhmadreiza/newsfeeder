@@ -110,7 +110,12 @@
     <br>
     <span>Dirangkum pada: </span><span th:text="${message}"></span>
     <br>
-    <span><a href="#">Subscribe</a> | <a href="#">Unsubscribe</a></span>
+    <span>
+        <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${subscribeUrl}"
+           th:text="Subscribe"></a> |
+        <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${unsubscribeUrl}"
+           th:text="Unsubscribe"></a>
+    </span>
   </div>
 </div>
 </body>
