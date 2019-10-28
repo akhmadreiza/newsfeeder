@@ -8,4 +8,6 @@ public interface UserService {
     List<UserEntity> getAllSubscriber();
 
     void subscribeUser(String emailAddress);
+
+    void unsubscribeUser(String emailAddress);
 }

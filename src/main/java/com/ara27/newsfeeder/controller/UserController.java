@@ -26,4 +26,10 @@ public class UserController {
     public List<UserEntity> listAllSubcriber() {
         return userService.getAllSubscriber();
     }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity unsubscribeUser(@RequestParam(required = true) String emailAddress) {
+        userService.unsubscribeUser(emailAddress);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

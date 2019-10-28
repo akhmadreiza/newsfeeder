@@ -27,4 +27,9 @@ public class UserServiceImpl implements UserService {
         userEntity.setEmailAddress(emailAddress);
         userRepository.save(userEntity);
     }
+
+    @Override
+    public void unsubscribeUser(String emailAddress) {
+        userRepository.delete(userRepository.findByEmailAddress(emailAddress));
+    }
 }
