@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/feedme/v1")
 public class DetikController {
 
     @Autowired
     DetikService detikService;
 
-    @GetMapping("/feedme/detik")
+    @GetMapping("/detik")
     public ResponseEntity getDetikMostPopular() throws IOException {
         return new ResponseEntity<>(new Data(detikService.listOfDetikPopularNews()), HttpStatus.OK);
     }

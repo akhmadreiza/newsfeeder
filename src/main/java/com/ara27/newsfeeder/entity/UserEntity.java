@@ -11,6 +11,7 @@ public class UserEntity {
     @Id
     private String id;
     private String emailAddress;
+    private String dtCreated;
 
     public String getId() {
         return id;
@@ -26,5 +27,13 @@ public class UserEntity {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public String getDtCreated() {
+        return dtCreated;
+    }
+
+    public void setDtCreated(String dtCreated) {
+        this.dtCreated = dtCreated;
     }
 }

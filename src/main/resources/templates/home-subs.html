@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>FeedMe!</title>
+</head>
+<body>
+<div style="margin-left: 15%; margin-right: 15%">
+    <div style="margin-bottom:0; text-align: center;">
+        <h1>
+            <span th:text="${subsHeadMessage}"></span>
+        </h1>
+        <p>
+            <span th:text="${subsContentMessage1}"></span>
+            <br>
+            <span th:text="${subsContentMessage2}"></span>
+        </p>
+    </div>
+
+    <div style="margin-top:10px; text-align: center;">
+        <span>Thanks and Regards</span>
+        <br>
+        <span>Reiza - FeedMe!</span>
+        <br>
+    </div>
+</div>
+</body>
+</html>

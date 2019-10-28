@@ -6,6 +6,8 @@ import com.ara27.newsfeeder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,11 +27,19 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(UUID.randomUUID().toString());
         userEntity.setEmailAddress(emailAddress);
-        userRepository.save(userEntity);
+        userEntity.setDtCreated(DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()));
+        if (!emailAlreadyExists(emailAddress)) {
+            userRepository.save(userEntity);
+        }
     }
 
     @Override
     public void unsubscribeUser(String emailAddress) {
-        userRepository.delete(userRepository.findByEmailAddress(emailAddress));
+        userRepository.deleteAll(userRepository.findAllByEmailAddress(emailAddress));
+    }
+
+    private boolean emailAlreadyExists(String emailAddress) {
+        List<UserEntity> entities = userRepository.findAllByEmailAddress(emailAddress);
+        return entities != null && !entities.isEmpty();
     }
 }

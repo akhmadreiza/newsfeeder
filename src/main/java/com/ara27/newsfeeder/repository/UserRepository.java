@@ -3,6 +3,8 @@ package com.ara27.newsfeeder.repository;
 import com.ara27.newsfeeder.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface UserRepository extends JpaRepository<UserEntity, String> {
-    UserEntity findByEmailAddress(String emailAddress);
+    List<UserEntity> findAllByEmailAddress(String emailAddress);
 }

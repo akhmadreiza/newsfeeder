@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/feedme/v1")
 public class NewsFeederController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NewsFeederController.class);
@@ -40,7 +40,7 @@ public class NewsFeederController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/feedme")
+    @GetMapping("/all")
     public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail) throws IOException {
         List<Articles> finalList = new ArrayList<>();
         List<Articles> tirto = tirtoArticles();

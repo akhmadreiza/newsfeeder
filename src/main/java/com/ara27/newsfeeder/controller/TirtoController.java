@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/feedme/v1")
 public class TirtoController {
     @Autowired
     TirtoService tirtoService;
 
-    @GetMapping("/feedme/tirto")
+    @GetMapping("/tirto")
     public ResponseEntity getTirtoPopular() throws IOException {
         return new ResponseEntity<>(new Data(tirtoService.popularTirtoArticles()), HttpStatus.OK);
     }
