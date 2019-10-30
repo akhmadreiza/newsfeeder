@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.mail.internet.InternetAddress;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class GmailServiceImpl implements GmailService {
 
     @Value("${feedme.unsubscribe.url}")
     String unsubscribeUrl;
+
+    @Value("${spring.mail.username}")
+    String fromAddress;
 
     @Autowired
     JavaMailSender javaMailSender;
@@ -53,19 +57,24 @@ public class GmailServiceImpl implements GmailService {
 
     @Override
     public void sendNewsEmailMime(List<String> recipients, List<Articles> tirtos, List<Articles> detiks) {
-        String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
+        LocalDateTime currLocalDateTime = LocalDateTime.now();
+        String currDate = DateTimeFormatter.ofPattern("dd-MMM").format(currLocalDateTime);
+        String currHHmm = DateTimeFormatter.ofPattern("HH:mm").format(currLocalDateTime);
         recipients.forEach(recipient -> {
             LOGGER.info("[sendNewsEmailMime] recipient: " + recipient);
             MimeMessagePreparator messagePreparator = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setTo(recipient);
-                messageHelper.setSubject("From FeedMe! to you | Featured news and articles at " + currDate);
+                messageHelper.setSubject("Berita & Artikel Populer " + currDate + " Pukul " + currHHmm);
+                messageHelper.setFrom(new InternetAddress(fromAddress, "Reiza dari FeedMe!"));
                 Context context = new Context();
-                context.setVariable("message", currDate);
+                context.setVariable("message", currDate + " Pukul " + currHHmm);
                 context.setVariable("tirtos", tirtos);
-                context.setVariable("detiks", filterNewsSource(detiks, "detikNews", "detikFinance", "detikInet"));
+                context.setVariable("detiks", detiks);
                 context.setVariable("subscribeUrl", baseUrl + subscribeUrl + recipient);
                 context.setVariable("unsubscribeUrl", baseUrl + unsubscribeUrl + recipient);
+                context.setVariable("teaser", "Dirangkum dari Detik: " + filterNewsSource(detiks, "detikNews").get(0).getTitle()
+                        + " | Dirangkum dari Tirto: " + tirtos.get(0).getTitle());
                 String content = templateEngine.process("mailTemplate", context);
                 messageHelper.setText(content, true);
             };

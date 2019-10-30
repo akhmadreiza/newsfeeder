@@ -60,32 +60,11 @@ public class DetikServiceImpl implements DetikService {
         Elements detikFinance = popularContents.get(2).getElementsByClass("list_box").select("li");
         detikFinance.forEach(content -> addArticles(detikArticles, content, "detikFinance"));
 
-        Elements detikSport = popularContents.get(3).getElementsByClass("list_box").select("li");
-        detikSport.forEach(content -> addArticles(detikArticles, content, "detikSport"));
-
         Elements sepakbola = popularContents.get(4).getElementsByClass("list_box").select("li");
         sepakbola.forEach(content -> addArticles(detikArticles, content, "detikSport-sepakbola"));
 
         Elements detikInet = popularContents.get(5).getElementsByClass("list_box").select("li");
         detikInet.forEach(content -> addArticles(detikArticles, content, "detikInet"));
-
-        Elements detikOto = popularContents.get(6).getElementsByClass("list_box").select("li");
-        detikOto.forEach(content -> addArticles(detikArticles, content, "detikOto"));
-
-        Elements detikHealth = popularContents.get(7).getElementsByClass("list_box").select("li");
-        detikHealth.forEach(content -> addArticles(detikArticles, content, "detikHealth"));
-
-        Elements detikTravel = popularContents.get(8).getElementsByClass("list_box").select("li");
-        detikTravel.forEach(content -> addArticles(detikArticles, content, "detikTravel"));
-
-        Elements detikFood = popularContents.get(9).getElementsByClass("list_box").select("li");
-        detikFood.forEach(content -> addArticles(detikArticles, content, "detikFood"));
-
-        Elements wolipop = popularContents.get(10).getElementsByClass("list_box").select("li");
-        wolipop.forEach(content -> addArticles(detikArticles, content, "wolipop"));
-
-        Elements detikTv = popularContents.get(11).getElementsByClass("list_box").select("li");
-        detikTv.forEach(content -> addArticles(detikArticles, content, "detikTv"));
         return detikArticles;
     }
 

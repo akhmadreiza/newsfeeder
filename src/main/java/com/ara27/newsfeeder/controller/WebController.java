@@ -21,11 +21,11 @@ public class WebController {
     public String postSubscribeHandler(Model model, @RequestParam(required = true) String emailAddress) {
         ResponseEntity responseEntity = subscribeUser(emailAddress);
         if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
-            model.addAttribute("subsHeadMessage", "Hello!");
+            model.addAttribute("subsHeadMessage", "Halo!");
             model.addAttribute("subsContentMessage1", "Terima kasih telah berlangganan layanan kami.");
             model.addAttribute("subsContentMessage2", "Tunggu update berita dan artikel populer dari kami, ya!");
         } else {
-            model.addAttribute("subsHeadMessage", "Oops!");
+            model.addAttribute("subsHeadMessage", "Ups..");
             model.addAttribute("subsContentMessage1", "Layanan ini sementara tidak tersedia.");
             model.addAttribute("subsContentMessage2", "Mohon maaf atas ketidaknyamanannya, ya!");
         }
@@ -45,7 +45,7 @@ public class WebController {
             model.addAttribute("subsContentMessage1", "Kamu telah berhasil berhenti berlangganan layanan kami..");
             model.addAttribute("subsContentMessage2", "Sampai jumpa lagi..");
         } else {
-            model.addAttribute("subsHeadMessage", "Oops!");
+            model.addAttribute("subsHeadMessage", "Ups..");
             model.addAttribute("subsContentMessage1", "Layanan ini sementara tidak tersedia.");
             model.addAttribute("subsContentMessage2", "Mohon maaf atas ketidaknyamanannya, ya!");
         }

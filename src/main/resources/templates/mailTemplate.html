@@ -1,62 +1,39 @@
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>FeedMe!</title>
+    <title>FeedMe!</title>
 </head>
 <body>
 <div style="font-family: Arial, Helvetica, sans-serif;">
 
+    <div style="display: none;" th:text="${teaser}"></div>
+
     <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
 
     <div style="margin-bottom:0; text-align: center; padding: 5% 5%">
-        <h1 style="font-size: 30px; margin-bottom: 0">Hello from FeedMe!</h1>
-        <p style="font-size: 20px; margin: 10px 0px">We are presenting to you the most popular news and article around
-            Indonesia. Because we care about your time.</p>
-  </div>
+        <h1 style="font-size: 30px; margin-bottom: 0">Greetings from FeedMe!</h1>
+        <p style="font-size: 20px; margin: 10px 0px">Kami merangkum berita dan artikel populer di Indonesia dan menyajikannya kepada kamu.
+            Karena kami peduli :)</p>
+        <!--<p style="font-size: 20px; margin: 10px 0px">We are presenting to you the most popular news and article around
+            Indonesia. Because we care about your time.</p>-->
+    </div>
 
-    <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
+    <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
 
-  <br>
-
-    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa itu FeedMe?</h3>
-        <p style="font-size: 20px">
-            <i>FeedMe!</i> adalah sebuah layanan yang merangkum berita-berita populer dari berbagai sumber dan
-            menyajikan rangkumannya setiap hari ke alamat email kamu.
-    </p>
-  </div>
-
-  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
-
-  <br>
-
-    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Kenapa saya harus berlangganan layanan ini?</h3>
-        <p style="font-size: 20px">
-            Salah satu alasannya adalah, kamu bisa lebih produktif dan tetap up to date! Why? Karena kamu cukup menunggu
-            notifikasi email rangkuman berita dari kami tanpa terus menerus mengakses website berita setiap waktu.
-    </p>
-        <p style="font-size: 20px">
-      Sounds good? Scroll down!
-    </p>
-  </div>
-
-  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
-
-  <br>
+    <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
         <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Artikel dan Berita Populer Saat ini</h3>
         <p style="font-size: 20px">
-            Saat ini, layanan ini merangkum berita dan artikel populer dari dua sumber, yaitu dari <a
+            <i>FeedMe!</i> saat ini merangkum berita dan artikel populer dari <a
                 href="https://www.tirto.id">Tirto</a> dan <a href="https://detik.com">Detik</a>. Kedepannya, kami
             berkomitmen untuk dapat menyajikan berita dan artikel populer dari sumber lainnya.
-    </p>
-  </div>
+        </p>
+    </div>
 
     <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
 
@@ -64,7 +41,7 @@
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
         <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Tirto</h3>
-  </div>
+    </div>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
     <span th:each="tirto : ${tirtos}">
@@ -73,7 +50,7 @@
       <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${tirto.getUrl()}"
          th:text="selengkapnya.."></a>
     </span>
-  </div>
+    </div>
 
     <br>
 
@@ -83,7 +60,7 @@
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
         <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Detik</h3>
-  </div>
+    </div>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
     <span th:each="detik : ${detiks}">
@@ -96,27 +73,57 @@
           <a th:href="${detik.getUrl()}"
              th:text="${detik.getTitle()}" th:if="${detik.getSource().equalsIgnoreCase('detikNews')}"></a>
         </p>-->
-  </div>
+    </div>
 
-  <br>
-  <br>
+    <br>
 
-  <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+    <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
 
-  <div style="margin-top:10px; text-align: center;">
-    <span>Thanks and Regards</span>
     <br>
-    <span>Reiza - FeedMe!</span>
+
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa itu FeedMe?</h3>
+        <p style="font-size: 20px">
+            <i>FeedMe!</i> adalah sebuah layanan yang merangkum berita dan artikel populer dari berbagai sumber dan
+            menyajikan rangkumannya setiap hari ke alamat email kamu.
+        </p>
+    </div>
+
+    <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
     <br>
-    <span>Dirangkum pada: </span><span th:text="${message}"></span>
+
+    <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa untungnya berlangganan FeedMe?</h3>
+        <p style="font-size: 20px">
+            Salah satu keuntungannya, kamu bisa tetap produktif sekaligus <i>up to date</i>! Kamu cukup duduk manis,
+            rangkuman berita dan artikel dari kami akan otomatis terkirim ke alamat email kamu.
+        </p>
+        <p style="font-size: 20px">
+            Tertarik? Hit <a style="text-decoration: none; color: #757575;" th:href="${subscribeUrl}"
+                             th:text="Subscribe"></a>!
+        </p>
+    </div>
+
     <br>
-    <span>
+    <br>
+
+    <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
+
+    <div style="margin-top:10px; text-align: center;">
+        <span>Thanks and Regards</span>
+        <br>
+        <span>Reiza - FeedMe!</span>
+        <br>
+        <span>Dirangkum pada: </span><span th:text="${message}"></span>
+        <br>
+        <span>
         <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${subscribeUrl}"
            th:text="Subscribe"></a> |
         <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${unsubscribeUrl}"
            th:text="Unsubscribe"></a>
     </span>
-  </div>
+    </div>
 </div>
 </body>
 </html>
