@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,9 @@ import java.util.List;
 
 @Service
 public class TirtoServiceImpl implements TirtoService {
+
+    @Value("${feedme.max.article.tirto}")
+    String maxArticleCount;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TirtoServiceImpl.class);
     public static final String TIRTO_MOST_POPULAR_URL = "https://tirto.id/search";
@@ -46,7 +50,8 @@ public class TirtoServiceImpl implements TirtoService {
         LOGGER.info("time taken to get " + TIRTO_MOST_POPULAR_URL + " : " + (endSuccessMillis - startMillis) + "ms");
 
         Elements elPopularArticles = tirtoHomePage.getElementsByClass("col-md-4 mb-4 news-list-fade");
-        for (Element elPopularArticle : elPopularArticles) {
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            Element elPopularArticle = elPopularArticles.get(i);
             String baseUrl = "https://tirto.id";
             String url = baseUrl + elPopularArticle.select("div a").last().attributes().get("href");
             String articleTitle = elPopularArticle.select("div a").last().select("h1").text();

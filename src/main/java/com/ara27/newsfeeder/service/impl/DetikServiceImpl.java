@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ public class DetikServiceImpl implements DetikService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DetikServiceImpl.class);
     public static final String DETIK_MOST_POPULAR_URL = "https://www.detik.com/mostpopular";
+
+    @Value("${feedme.max.article.detik}")
+    String maxArticleCount;
 
     @Override
     public List<Articles> listOfDetikPopularNews() throws IOException {
@@ -52,19 +56,30 @@ public class DetikServiceImpl implements DetikService {
         Elements popularContents = popularContentDiv.getElementsByClass("outer_box");
 
         Elements detikNews = popularContents.get(0).getElementsByClass("list_box").select("li");
-        detikNews.forEach(content -> addArticles(detikArticles, content, "detikNews"));
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            addArticles(detikArticles, detikNews.get(i), "detikNews");
+        }
 
         Elements detikHot = popularContents.get(1).getElementsByClass("list_box").select("li");
-        detikHot.forEach(content -> addArticles(detikArticles, content, "detikHot"));
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            addArticles(detikArticles, detikHot.get(i), "detikHot");
+        }
 
         Elements detikFinance = popularContents.get(2).getElementsByClass("list_box").select("li");
-        detikFinance.forEach(content -> addArticles(detikArticles, content, "detikFinance"));
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            addArticles(detikArticles, detikFinance.get(i), "detikFinance");
+        }
 
         Elements sepakbola = popularContents.get(4).getElementsByClass("list_box").select("li");
-        sepakbola.forEach(content -> addArticles(detikArticles, content, "detikSport-sepakbola"));
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            addArticles(detikArticles, sepakbola.get(i), "detikSport-sepakbola");
+        }
 
         Elements detikInet = popularContents.get(5).getElementsByClass("list_box").select("li");
-        detikInet.forEach(content -> addArticles(detikArticles, content, "detikInet"));
+        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+            addArticles(detikArticles, detikInet.get(i), "detikInet");
+        }
+
         return detikArticles;
     }
 
