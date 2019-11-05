@@ -61,7 +61,7 @@ public class DetikServiceImpl implements DetikService {
         }
 
         Elements detikHot = popularContents.get(1).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+        for (int i = 0; i < 2; i++) {
             addArticles(detikArticles, detikHot.get(i), "detikHot");
         }
 
@@ -71,12 +71,12 @@ public class DetikServiceImpl implements DetikService {
         }
 
         Elements sepakbola = popularContents.get(4).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+        for (int i = 0; i < 2; i++) {
             addArticles(detikArticles, sepakbola.get(i), "detikSport-sepakbola");
         }
 
         Elements detikInet = popularContents.get(5).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
+        for (int i = 0; i < 2; i++) {
             addArticles(detikArticles, detikInet.get(i), "detikInet");
         }
 
@@ -96,10 +96,10 @@ public class DetikServiceImpl implements DetikService {
         articles.setTitle(articleTitle);
         try {
             constructSubtitle(articles);
-            detikArticles.add(articles);
         } catch (Exception e) {
             LOGGER.error("failed to construct subtitle", e);
         }
+        detikArticles.add(articles);
     }
 
     private void constructSubtitle(Articles articles) throws IOException {
@@ -125,6 +125,9 @@ public class DetikServiceImpl implements DetikService {
         LOGGER.info("time taken to get " + articles.getUrl() + " : " + (endSuccessMillis - startMillis) + "ms");
 
         Elements lastUpdateEl = detikDetail.getElementsByClass("itp_bodycontent detail_text");
+        if (lastUpdateEl == null || lastUpdateEl.isEmpty()) {
+            lastUpdateEl = detikDetail.getElementsByClass("detail_text");
+        }
         String fullContent = lastUpdateEl.get(0).text();
         String[] contentSplitByFullStop = fullContent.split("\\.");
         String firstSentences = contentSplitByFullStop[0];
