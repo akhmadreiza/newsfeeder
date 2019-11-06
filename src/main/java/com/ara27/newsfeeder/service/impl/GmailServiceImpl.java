@@ -1,6 +1,8 @@
 package com.ara27.newsfeeder.service.impl;
 
 import com.ara27.newsfeeder.domain.Articles;
+import com.ara27.newsfeeder.entity.EmailMonitoringLog;
+import com.ara27.newsfeeder.repository.EmailMonitoringRepository;
 import com.ara27.newsfeeder.service.GmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class GmailServiceImpl implements GmailService {
@@ -43,6 +46,9 @@ public class GmailServiceImpl implements GmailService {
     @Autowired
     TemplateEngine templateEngine;
 
+    @Autowired
+    EmailMonitoringRepository emailMonitoringRepository;
+
     @Override
     public void sendNewsEmail(List<String> recipients, String emailContent) {
         String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
@@ -61,11 +67,14 @@ public class GmailServiceImpl implements GmailService {
         String currDate = DateTimeFormatter.ofPattern("dd-MMM").format(currLocalDateTime);
         String currHHmm = DateTimeFormatter.ofPattern("HH:mm").format(currLocalDateTime);
         recipients.forEach(recipient -> {
+            String subject = "Berita & Artikel Populer " + currDate + " Pukul " + currHHmm;
+            String status = "INIT";
+            String errMessage = null;
             LOGGER.info("[sendNewsEmailMime] recipient: " + recipient);
             MimeMessagePreparator messagePreparator = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setTo(recipient);
-                messageHelper.setSubject("Berita & Artikel Populer " + currDate + " Pukul " + currHHmm);
+                messageHelper.setSubject(subject);
                 messageHelper.setFrom(new InternetAddress(fromAddress, "Reiza dari FeedMe!"));
                 Context context = new Context();
                 context.setVariable("message", currDate + " Pukul " + currHHmm);
@@ -77,8 +86,19 @@ public class GmailServiceImpl implements GmailService {
                         + " | Dirangkum dari Tirto: " + tirtos.get(0).getTitle());
                 String content = templateEngine.process("mailTemplate", context);
                 messageHelper.setText(content, true);
+
             };
-            javaMailSender.send(messagePreparator);
+            Long startMillis = System.currentTimeMillis();
+            try {
+                javaMailSender.send(messagePreparator);
+                status = "SUCCESS";
+            } catch (Exception e) {
+                status = "FAILED";
+                errMessage = e.getMessage();
+                LOGGER.error("[sendNewsEmailMime] error! {}", e);
+            }
+            Long endMillis = System.currentTimeMillis();
+            emailMonitoringRepository.save(constructMonitoringLog(subject, fromAddress, recipient, (endMillis - startMillis), status, errMessage));
         });
     }
 
@@ -92,5 +112,19 @@ public class GmailServiceImpl implements GmailService {
             }
         }
         return detikNews;
+    }
+
+    private EmailMonitoringLog constructMonitoringLog(String subject, String from, String recipient, Long processingTime, String status, String errMessage) {
+        EmailMonitoringLog emailMonitoringLog = new EmailMonitoringLog();
+        emailMonitoringLog.setCreatedBy("SYSTEM");
+        emailMonitoringLog.setCreatedDate(LocalDateTime.now());
+        emailMonitoringLog.setSubject(subject);
+        emailMonitoringLog.setEmailSender(from);
+        emailMonitoringLog.setEmailRecipient(recipient);
+        emailMonitoringLog.setId(UUID.randomUUID().toString());
+        emailMonitoringLog.setEmailProcTime(processingTime);
+        emailMonitoringLog.setStatus(status);
+        emailMonitoringLog.setErrMessage(errMessage);
+        return emailMonitoringLog;
     }
 }
