@@ -2,7 +2,9 @@ package com.ara27.newsfeeder.controller;
 
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.domain.Data;
+import com.ara27.newsfeeder.entity.CronjobMonitoringLog;
 import com.ara27.newsfeeder.entity.UserEntity;
+import com.ara27.newsfeeder.repository.CronjobMonitoringRepository;
 import com.ara27.newsfeeder.service.DetikService;
 import com.ara27.newsfeeder.service.GmailService;
 import com.ara27.newsfeeder.service.TirtoService;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/feedme/v1")
@@ -41,6 +45,9 @@ public class NewsFeederController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CronjobMonitoringRepository cronjobMonitoringRepository;
+
     @GetMapping("/all")
     public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail,
                                  @RequestParam(required = false, defaultValue = "true") boolean debugMode) throws IOException {
@@ -60,22 +67,43 @@ public class NewsFeederController {
     }
 
     @Scheduled(cron = "${feedme.cron}")
-    private void sendNewsToEmail() throws IOException {
+    private void sendNewsToEmail() {
         LOGGER.info("feedme job invoked!");
-        List<Articles> tirto = tirtoArticles();
-        List<Articles> detik = detikArticles();
-        List<String> emailRecipient = constructEmailRecipients();
-        sendEmail(tirto, detik, emailRecipient);
+        Long startMillis = System.currentTimeMillis();
+        try {
+            List<Articles> tirto = tirtoArticles();
+            List<Articles> detik = detikArticles();
+            List<String> emailRecipient = constructEmailRecipients();
+            sendEmail(tirto, detik, emailRecipient);
+            Long endMillis = System.currentTimeMillis();
+            Long processingTime = endMillis - startMillis;
+            cronjobMonitoringRepository.save(cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "SUCCESS", null)));
+        } catch (IOException e) {
+            Long endMillis = System.currentTimeMillis();
+            Long processingTime = endMillis - startMillis;
+            LOGGER.error("feedme job error! {}", e);
+            cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "ERROR", e.getMessage()));
+        }
     }
 
-    private void sendEmail(List<Articles> tirto, List<Articles> detik, List<String> recipients) throws IOException {
+    private CronjobMonitoringLog constructCronjobMonitoring(Long processingTime, String status, String errorMessage) {
+        CronjobMonitoringLog cronjobMonitoringLog = new CronjobMonitoringLog();
+        cronjobMonitoringLog.setId(UUID.randomUUID().toString());
+        cronjobMonitoringLog.setCreatedBy("SYSTEM");
+        cronjobMonitoringLog.setCreatedDate(LocalDateTime.now());
+        cronjobMonitoringLog.setStatus(status);
+        cronjobMonitoringLog.setErrorMessage(errorMessage);
+        cronjobMonitoringLog.setProcessingTimeMillis(processingTime);
+        return cronjobMonitoringLog;
+    }
+
+    private void sendEmail(List<Articles> tirto, List<Articles> detik, List<String> recipients) {
         LOGGER.info("Start sending email to list of recipients");
         for (String recipient : recipients) {
             LOGGER.info(recipient);
         }
 
         gmailService.sendNewsEmailMime(recipients, tirto, detik);
-        LOGGER.info("Email sent to recipients!");
     }
 
     private List<String> constructEmailRecipients(String... recipient) {

@@ -92,10 +92,12 @@ public class GmailServiceImpl implements GmailService {
             try {
                 javaMailSender.send(messagePreparator);
                 status = "SUCCESS";
+                LOGGER.info("Email sent to recipients!");
             } catch (Exception e) {
                 status = "FAILED";
                 errMessage = e.getMessage();
                 LOGGER.error("[sendNewsEmailMime] error! {}", e);
+                LOGGER.info("Email not sent to recipients!");
             }
             Long endMillis = System.currentTimeMillis();
             emailMonitoringRepository.save(constructMonitoringLog(subject, fromAddress, recipient, (endMillis - startMillis), status, errMessage));
