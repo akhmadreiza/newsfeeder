@@ -82,7 +82,9 @@ public class NewsFeederController {
             Long endMillis = System.currentTimeMillis();
             Long processingTime = endMillis - startMillis;
             LOGGER.error("feedme job error! {}", e);
-            cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "ERROR", e.getMessage()));
+            CronjobMonitoringLog cronjobMonitoringLog = constructCronjobMonitoring(processingTime, "ERROR", e.getMessage());
+            cronjobMonitoringRepository.save(cronjobMonitoringLog);
+            gmailService.sendEmailAlert(cronjobMonitoringLog);
         }
     }
 

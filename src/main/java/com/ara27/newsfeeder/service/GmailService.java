@@ -8,4 +8,6 @@ public interface GmailService {
     void sendNewsEmail(List<String> recipients, String emailContent);
 
     void sendNewsEmailMime(List<String> recipients, List<Articles> tirtos, List<Articles> detiks);
+
+    void sendEmailAlert(Object errObj);
 }

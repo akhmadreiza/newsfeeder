@@ -1,6 +1,7 @@
 package com.ara27.newsfeeder.service.impl;
 
 import com.ara27.newsfeeder.domain.Articles;
+import com.ara27.newsfeeder.entity.CronjobMonitoringLog;
 import com.ara27.newsfeeder.entity.EmailMonitoringLog;
 import com.ara27.newsfeeder.repository.EmailMonitoringRepository;
 import com.ara27.newsfeeder.service.GmailService;
@@ -59,6 +60,19 @@ public class GmailServiceImpl implements GmailService {
             mailMessage.setText(emailContent);
             javaMailSender.send(mailMessage);
         });
+    }
+
+    @Override
+    public void sendEmailAlert(Object errObj) {
+        if (errObj instanceof CronjobMonitoringLog) {
+            CronjobMonitoringLog cronjobMonitoringLog = (CronjobMonitoringLog) errObj;
+            String currDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm").format(LocalDateTime.now());
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo("reizaarmando@gmail.com");
+            mailMessage.setSubject("[ERROR ALERT] at " + currDate);
+            mailMessage.setText("Cronjob Error! Reason: " + cronjobMonitoringLog.getErrorMessage());
+            javaMailSender.send(mailMessage);
+        }
     }
 
     @Override
