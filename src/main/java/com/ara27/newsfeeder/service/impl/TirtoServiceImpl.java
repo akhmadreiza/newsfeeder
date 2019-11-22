@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class TirtoServiceImpl implements TirtoService {
 
-    @Value("${feedme.max.article.tirto}")
+    @Value("${ngumpuli.max.article.tirto}")
     String maxArticleCount;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(TirtoServiceImpl.class);

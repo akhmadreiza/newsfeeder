@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/feedme/user")
+@RequestMapping("/ngumpuli/user")
 public class WebController {
 
     @Autowired

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/feedme/v1")
+@RequestMapping("/ngumpuli/v1")
 public class NewsFeederController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NewsFeederController.class);
@@ -66,7 +66,7 @@ public class NewsFeederController {
         return new ResponseEntity<>(new Data(finalList, finalList.size()), HttpStatus.OK);
     }
 
-    @Scheduled(cron = "${feedme.cron}")
+    @Scheduled(cron = "${ngumpuli.cron}")
     private void sendNewsToEmail() {
         LOGGER.info("feedme job invoked!");
         Long startMillis = System.currentTimeMillis();

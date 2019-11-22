@@ -22,7 +22,7 @@ public class DetikServiceImpl implements DetikService {
     public static final Logger LOGGER = LoggerFactory.getLogger(DetikServiceImpl.class);
     public static final String DETIK_MOST_POPULAR_URL = "https://www.detik.com/mostpopular";
 
-    @Value("${feedme.max.article.detik}")
+    @Value("${ngumpuli.max.article.detik}")
     String maxArticleCount;
 
     @Override

@@ -29,13 +29,13 @@ public class GmailServiceImpl implements GmailService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GmailServiceImpl.class);
 
-    @Value("${feedme.application.url}")
+    @Value("${ngumpuli.application.url}")
     String baseUrl;
 
-    @Value("${feedme.subscribe.url}")
+    @Value("${ngumpuli.subscribe.url}")
     String subscribeUrl;
 
-    @Value("${feedme.unsubscribe.url}")
+    @Value("${ngumpuli.unsubscribe.url}")
     String unsubscribeUrl;
 
     @Value("${spring.mail.username}")
@@ -56,7 +56,7 @@ public class GmailServiceImpl implements GmailService {
         recipients.forEach(recipient -> {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(recipient);
-            mailMessage.setSubject("From FeedMe! to you | Featured news and articles at " + currDate);
+            mailMessage.setSubject("From Ngumpuli to you | Featured news and articles at " + currDate);
             mailMessage.setText(emailContent);
             javaMailSender.send(mailMessage);
         });
@@ -89,7 +89,7 @@ public class GmailServiceImpl implements GmailService {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setTo(recipient);
                 messageHelper.setSubject(subject);
-                messageHelper.setFrom(new InternetAddress(fromAddress, "Reiza dari FeedMe!"));
+                messageHelper.setFrom(new InternetAddress(fromAddress, "Reiza dari Ngumpuli"));
                 Context context = new Context();
                 context.setVariable("message", currDate + " Pukul " + currHHmm);
                 context.setVariable("tirtos", tirtos);

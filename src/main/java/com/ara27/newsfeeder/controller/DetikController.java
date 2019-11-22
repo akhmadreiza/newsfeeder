@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/feedme/v1")
+@RequestMapping("/ngumpuli/v1")
 public class DetikController {
 
     @Autowired
