@@ -7,7 +7,7 @@
 
     <title>Ngumpuli</title>
 </head>
-<body>
+<body style="margin: 0 auto; max-width: 50em;">
 <div style="font-family: Arial, Helvetica, sans-serif;">
 
     <div style="display: none;" th:text="${teaser}"></div>
@@ -15,8 +15,12 @@
     <div style="height:2px;border-bottom:1px solid #e5e5e5;"></div>
 
     <div style="margin-bottom:0; text-align: center; padding: 5% 5%">
-        <h1 style="font-size: 30px; margin-bottom: 0">Greetings from Ngumpuli</h1>
-        <p style="font-size: 20px; margin: 10px 0px">Kami merangkum berita dan artikel populer di Indonesia dan menyajikannya kepada kamu.
+        <h1 style="font-size: 30px; margin-bottom: 0">
+            <a href="http://ngumpuli.com" style="text-decoration: none; color: #555">
+                NGUMPULI
+            </a>
+        </h1>
+        <p style="font-size: 20px; margin: 10px 0px; color: #555;">Kami mengumpulkan berita dan artikel populer di Indonesia dan menyajikannya kepada kamu.
             Karena kami peduli :)</p>
         <!--<p style="font-size: 20px; margin: 10px 0px">We are presenting to you the most popular news and article around
             Indonesia. Because we care about your time.</p>-->
@@ -27,10 +31,12 @@
     <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Artikel dan Berita Populer Saat ini</h3>
-        <p style="font-size: 20px">
-            <i>Ngumpuli</i> saat ini merangkum berita dan artikel populer dari <a
-                href="https://www.tirto.id">Tirto</a> dan <a href="https://detik.com">Detik</a>. Kedepannya, kami
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0; color: #555">Artikel dan Berita Populer Saat ini</h3>
+        <p style="font-size: 20px; color: #555">
+            <i>
+                <a href="http://ngumpuli.com" style="color: green">Ngumpuli</a>
+            </i> saat ini mengumpulkan berita dan artikel populer dari <a style="color: green"
+                href="https://www.tirto.id">Tirto</a> dan <a style="color: green" href="https://detik.com">Detik</a>. Kedepannya, kami
             berkomitmen untuk dapat menyajikan berita dan artikel populer dari sumber lainnya.
         </p>
     </div>
@@ -40,14 +46,14 @@
     <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Tirto</h3>
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0; color: #555">Dirangkum dari Tirto</h3>
     </div>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
     <span th:each="tirto : ${tirtos}">
-      <b><p style="font-size: 15px; margin: 15px 0px 0px" th:text="${tirto.getTitle()}"></p></b>
-      <p style="font-size: 15px; margin: 10px 0px 5px" th:text="${tirto.getSubtitle()}"></p>
-      <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${tirto.getUrl()}"
+      <b><p style="font-size: 15px; margin: 15px 0px 0px; color: #555" th:text="${tirto.getTitle()}"></p></b>
+      <p style="font-size: 15px; margin: 10px 0px 5px; color: #555" th:text="${tirto.getSubtitle()}"></p>
+      <a style="font-size: 15px; text-decoration: none; color: green;" th:href="${tirto.getUrl()}"
          th:text="selengkapnya.."></a>
     </span>
     </div>
@@ -59,14 +65,14 @@
     <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Dirangkum dari Detik</h3>
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0; color: #555">Dirangkum dari Detik</h3>
     </div>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
     <span th:each="detik : ${detiks}">
-      <b><p style="font-size: 15px; margin: 15px 0px 0px" th:text="${detik.getTitle()}"></p></b>
-      <p style="font-size: 15px; margin: 10px 0px 5px" th:text="${detik.getSubtitle()}"></p>
-      <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${detik.getUrl()}"
+      <b><p style="font-size: 15px; margin: 15px 0px 0px; color: #555" th:text="${detik.getTitle()}"></p></b>
+      <p style="font-size: 15px; margin: 10px 0px 5px color: #555" th:text="${detik.getSubtitle()}"></p>
+      <a style="font-size: 15px; text-decoration: none; color: green;" th:href="${detik.getUrl()}"
          th:text="selengkapnya.."></a>
     </span>
         <!--<p th:each="detik : ${detiks}">
@@ -82,9 +88,9 @@
     <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa itu Ngumpuli?</h3>
-        <p style="font-size: 20px">
-            <i>Ngumpuli</i> adalah sebuah layanan yang merangkum berita dan artikel populer dari berbagai sumber dan
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0; color: #555">Apa itu Ngumpuli?</h3>
+        <p style="font-size: 20px; color: #555">
+            <i><a href="http://ngumpuli.com" style="color: green">Ngumpuli</a></i> adalah sebuah layanan yang mengumpulkan berita dan artikel populer dari berbagai sumber dan
             menyajikan rangkumannya setiap hari ke alamat email kamu.
         </p>
     </div>
@@ -94,13 +100,14 @@
     <br>
 
     <div style="margin-bottom:0; text-align: left; padding-left: 5%; padding-right: 5%">
-        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0">Apa untungnya berlangganan Ngumpuli?</h3>
-        <p style="font-size: 20px">
-            Salah satu keuntungannya, kamu bisa tetap produktif sekaligus <i>up to date</i>! Kamu cukup duduk manis,
+        <h3 style="font-size: 25px; margin-bottom: 0; margin-top: 0; color: #555">Apa untungnya berlangganan Ngumpuli?</h3>
+        <p style="font-size: 20px; color: #555">
+            Salah satu keuntungan berlangganan <a href="http://ngumpuli.com" style="color: green"><i>Ngumpuli</i></a> adalah
+            kamu bisa tetap produktif sekaligus <i>up to date</i>! Kamu cukup duduk manis,
             rangkuman berita dan artikel dari kami akan otomatis terkirim ke alamat email kamu.
         </p>
-        <p style="font-size: 20px">
-            Tertarik? Hit <a style="text-decoration: none; color: #757575;" th:href="${subscribeUrl}"
+        <p style="font-size: 20px; color: #555">
+            Tertarik? Hit <a style="text-decoration: none; color: green;" th:href="${subscribeUrl}"
                              th:text="Subscribe"></a>!
         </p>
     </div>
@@ -111,16 +118,16 @@
     <div style="height:2px;border-bottom:1px solid #e5e5e5"></div>
 
     <div style="margin-top:10px; text-align: center;">
-        <span>Thanks and Regards</span>
+        <span style="color: #555">Thanks and Regards</span>
         <br>
-        <span>Reiza - Ngumpuli</span>
+        <span style="color: #555">Reiza - Ngumpuli</span>
         <br>
-        <span>Dirangkum pada: </span><span th:text="${message}"></span>
+        <span style="color: #555">Dirangkum pada: </span><span style="color: #555" th:text="${message}"></span>
         <br>
         <span>
-        <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${subscribeUrl}"
+        <a style="font-size: 15px; text-decoration: none; color: green;" th:href="${subscribeUrl}"
            th:text="Subscribe"></a> |
-        <a style="font-size: 15px; text-decoration: none; color: #757575;" th:href="${unsubscribeUrl}"
+        <a style="font-size: 15px; text-decoration: none; color: green;" th:href="${unsubscribeUrl}"
            th:text="Unsubscribe"></a>
     </span>
     </div>
