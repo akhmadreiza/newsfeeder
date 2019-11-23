@@ -2,8 +2,10 @@ package com.ara27.newsfeeder.controller;
 
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.domain.Data;
+import com.ara27.newsfeeder.entity.ContentHistory;
 import com.ara27.newsfeeder.entity.CronjobMonitoringLog;
 import com.ara27.newsfeeder.entity.UserEntity;
+import com.ara27.newsfeeder.repository.ContentHistoryRepository;
 import com.ara27.newsfeeder.repository.CronjobMonitoringRepository;
 import com.ara27.newsfeeder.service.DetikService;
 import com.ara27.newsfeeder.service.GmailService;
@@ -48,6 +50,9 @@ public class NewsFeederController {
     @Autowired
     CronjobMonitoringRepository cronjobMonitoringRepository;
 
+    @Autowired
+    ContentHistoryRepository contentHistoryRepository;
+
     @GetMapping("/all")
     public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail,
                                  @RequestParam(required = false, defaultValue = "true") boolean debugMode) throws IOException {
@@ -68,27 +73,55 @@ public class NewsFeederController {
 
     @Scheduled(cron = "${ngumpuli.cron}")
     private void sendNewsToEmail() {
+        String cronjobId = UUID.randomUUID().toString();
         LOGGER.info("feedme job invoked!");
         Long startMillis = System.currentTimeMillis();
         try {
             List<Articles> tirto = tirtoArticles();
             List<Articles> detik = detikArticles();
+            List<Articles> allArticles = new ArrayList<>();
+            allArticles.addAll(tirto);
+            allArticles.addAll(detik);
+            saveContentHistory(cronjobId, allArticles);
             List<String> emailRecipient = constructEmailRecipients();
             sendEmail(tirto, detik, emailRecipient);
             Long endMillis = System.currentTimeMillis();
             Long processingTime = endMillis - startMillis;
-            cronjobMonitoringRepository.save(cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "SUCCESS", null)));
+            cronjobMonitoringRepository.save(cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "SUCCESS", null, cronjobId)));
         } catch (IOException e) {
             Long endMillis = System.currentTimeMillis();
             Long processingTime = endMillis - startMillis;
             LOGGER.error("feedme job error! {}", e);
-            CronjobMonitoringLog cronjobMonitoringLog = constructCronjobMonitoring(processingTime, "ERROR", e.getMessage());
+            CronjobMonitoringLog cronjobMonitoringLog = constructCronjobMonitoring(processingTime, "ERROR", e.getMessage(), cronjobId);
             cronjobMonitoringRepository.save(cronjobMonitoringLog);
             gmailService.sendEmailAlert(cronjobMonitoringLog);
         }
     }
 
-    private CronjobMonitoringLog constructCronjobMonitoring(Long processingTime, String status, String errorMessage) {
+    private void saveContentHistory(String cronjobId, List<Articles> articles) {
+        Long startMillis = System.currentTimeMillis();
+        List<ContentHistory> contentHistories = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        for (Articles article : articles) {
+            ContentHistory contentHistory = new ContentHistory();
+            contentHistory.setCronjobId(cronjobId);
+            contentHistory.setHeader(article.getHeader());
+            contentHistory.setDtCreated(now);
+            contentHistory.setDtCronRunning(now);
+            contentHistory.setId(UUID.randomUUID().toString());
+            contentHistory.setSource(article.getSource());
+            contentHistory.setTitle(article.getTitle());
+            contentHistory.setSubTitle(article.getSubtitle());
+            contentHistory.setTimeStamp(article.getTimestamp());
+            contentHistory.setUrl(article.getUrl());
+            contentHistories.add(contentHistory);
+        }
+        contentHistoryRepository.saveAll(contentHistories);
+        Long endMillis = System.currentTimeMillis();
+        LOGGER.info("[saveContentHistory] took about: " + (endMillis - startMillis) + "ms");
+    }
+
+    private CronjobMonitoringLog constructCronjobMonitoring(Long processingTime, String status, String errorMessage, String cronjobId) {
         CronjobMonitoringLog cronjobMonitoringLog = new CronjobMonitoringLog();
         cronjobMonitoringLog.setId(UUID.randomUUID().toString());
         cronjobMonitoringLog.setCreatedBy("SYSTEM");
