@@ -19,7 +19,7 @@ public class WebController {
 
     @GetMapping("/subscribe")
     public String postSubscribeHandler(Model model, @RequestParam(required = true) String emailAddress,
-                                       @RequestParam(required = true) String name) {
+                                       @RequestParam(required = false) String name) {
         ResponseEntity responseEntity = subscribeUser(emailAddress, name);
         if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
             model.addAttribute("subsHeadMessage", "Halo!");
