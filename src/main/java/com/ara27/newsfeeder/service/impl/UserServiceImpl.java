@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> getAllSubscriber() {
-        return userRepository.findAll();
+        return userRepository.findAllByUserType(UserType.SUBSCRIBER.name());
     }
 
     @Override
