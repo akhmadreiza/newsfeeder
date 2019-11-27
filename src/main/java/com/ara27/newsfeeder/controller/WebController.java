@@ -18,8 +18,9 @@ public class WebController {
     UserService userService;
 
     @GetMapping("/subscribe")
-    public String postSubscribeHandler(Model model, @RequestParam(required = true) String emailAddress) {
-        ResponseEntity responseEntity = subscribeUser(emailAddress);
+    public String postSubscribeHandler(Model model, @RequestParam(required = true) String emailAddress,
+                                       @RequestParam(required = true) String name) {
+        ResponseEntity responseEntity = subscribeUser(emailAddress, name);
         if (responseEntity.getStatusCode().equals(HttpStatus.CREATED)) {
             model.addAttribute("subsHeadMessage", "Halo!");
             model.addAttribute("subsContentMessage1", "Terima kasih telah berlangganan layanan kami.");
@@ -32,8 +33,8 @@ public class WebController {
         return "home-subs";
     }
 
-    private ResponseEntity subscribeUser(@RequestParam(required = true) String emailAddress) {
-        userService.subscribeUser(emailAddress);
+    private ResponseEntity subscribeUser(@RequestParam(required = true) String emailAddress, @RequestParam(required = true) String name) {
+        userService.subscribeUser(emailAddress, name);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

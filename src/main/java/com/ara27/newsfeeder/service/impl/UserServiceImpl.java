@@ -23,10 +23,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void subscribeUser(String emailAddress) {
+    public void subscribeUser(String emailAddress, String name) {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(UUID.randomUUID().toString());
         userEntity.setEmailAddress(emailAddress);
+        userEntity.setName(name);
         userEntity.setDtCreated(DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now()));
         if (!emailAlreadyExists(emailAddress)) {
             userRepository.save(userEntity);

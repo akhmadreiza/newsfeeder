@@ -17,8 +17,9 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/subscribe")
-    public ResponseEntity subscribeUser(@RequestParam(required = true) String emailAddress) {
-        userService.subscribeUser(emailAddress);
+    public ResponseEntity subscribeUser(@RequestParam(required = true) String emailAddress,
+                                        @RequestParam(required = true) String name) {
+        userService.subscribeUser(emailAddress, name);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

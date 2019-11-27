@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserService {
     List<UserEntity> getAllSubscriber();
 
-    void subscribeUser(String emailAddress);
+    void subscribeUser(String emailAddress, String name);
 
     void unsubscribeUser(String emailAddress);
 }

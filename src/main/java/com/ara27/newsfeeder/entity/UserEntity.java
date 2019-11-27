@@ -12,6 +12,15 @@ public class UserEntity {
     private String id;
     private String emailAddress;
     private String dtCreated;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;
