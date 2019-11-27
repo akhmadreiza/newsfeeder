@@ -13,6 +13,7 @@ public class UserEntity {
     private String emailAddress;
     private String dtCreated;
     private String name;
+    private String userType;
 
     public String getName() {
         return name;
@@ -44,5 +45,13 @@ public class UserEntity {
 
     public void setDtCreated(String dtCreated) {
         this.dtCreated = dtCreated;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 }

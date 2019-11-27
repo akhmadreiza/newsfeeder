@@ -10,4 +10,8 @@ public interface UserService {
     void subscribeUser(String emailAddress, String name);
 
     void unsubscribeUser(String emailAddress);
+
+    void subscribeUserOneTimeService(String emailAddress, String name);
+
+    void subscribeLeads(String emailAddress, String name);
 }

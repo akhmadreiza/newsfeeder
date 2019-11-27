@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/ngumpuli/v1")
+@EnableAsync
 public class NewsFeederController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NewsFeederController.class);
@@ -69,6 +71,17 @@ public class NewsFeederController {
         }
 
         return new ResponseEntity<>(new Data(finalList, finalList.size()), HttpStatus.OK);
+    }
+
+    @GetMapping("/specific-user")
+    public ResponseEntity getAllForSpecificUser(
+            @RequestParam String emailAddress,
+            @RequestParam(required = false) String name) throws IOException {
+        userService.subscribeUserOneTimeService(emailAddress, name);
+        LOGGER.info("constructing data and send email async start");
+        gmailService.sendEmailAsync(emailAddress);
+        LOGGER.info("constructing data and send email async end");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Scheduled(cron = "${ngumpuli.cron}")

@@ -4,7 +4,9 @@ import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.entity.CronjobMonitoringLog;
 import com.ara27.newsfeeder.entity.EmailMonitoringLog;
 import com.ara27.newsfeeder.repository.EmailMonitoringRepository;
+import com.ara27.newsfeeder.service.DetikService;
 import com.ara27.newsfeeder.service.GmailService;
+import com.ara27.newsfeeder.service.TirtoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import javax.mail.internet.InternetAddress;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -49,6 +53,12 @@ public class GmailServiceImpl implements GmailService {
 
     @Autowired
     EmailMonitoringRepository emailMonitoringRepository;
+
+    @Autowired
+    DetikService detikService;
+
+    @Autowired
+    TirtoService tirtoService;
 
     @Override
     public void sendNewsEmail(List<String> recipients, String emailContent) {
@@ -142,5 +152,26 @@ public class GmailServiceImpl implements GmailService {
         emailMonitoringLog.setStatus(status);
         emailMonitoringLog.setErrMessage(errMessage);
         return emailMonitoringLog;
+    }
+
+    @Override
+    @Async("threadPoolTaskExecutor")
+    public void sendEmailAsync(String emailAddress) throws IOException {
+        List<Articles> finalList = new ArrayList<>();
+        List<Articles> tirto = tirtoArticles();
+        List<Articles> detik = detikArticles();
+        finalList.addAll(tirto);
+        finalList.addAll(detik);
+        List<String> recipients = new ArrayList<>();
+        recipients.add(emailAddress);
+        sendNewsEmailMime(recipients, tirto, detik);
+    }
+
+    private List<Articles> tirtoArticles() throws IOException {
+        return tirtoService.popularTirtoArticles();
+    }
+
+    private List<Articles> detikArticles() throws IOException {
+        return detikService.listOfDetikPopularNews();
     }
 }
