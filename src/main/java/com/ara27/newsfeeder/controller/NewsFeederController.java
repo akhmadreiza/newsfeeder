@@ -7,10 +7,7 @@ import com.ara27.newsfeeder.entity.CronjobMonitoringLog;
 import com.ara27.newsfeeder.entity.UserEntity;
 import com.ara27.newsfeeder.repository.ContentHistoryRepository;
 import com.ara27.newsfeeder.repository.CronjobMonitoringRepository;
-import com.ara27.newsfeeder.service.DetikService;
-import com.ara27.newsfeeder.service.GmailService;
-import com.ara27.newsfeeder.service.TirtoService;
-import com.ara27.newsfeeder.service.UserService;
+import com.ara27.newsfeeder.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +52,9 @@ public class NewsFeederController {
     @Autowired
     ContentHistoryRepository contentHistoryRepository;
 
+    @Autowired
+    ContentHistoryService contentHistoryService;
+
     @GetMapping("/all")
     public ResponseEntity getAll(@RequestParam(required = false) boolean sendEmail,
                                  @RequestParam(required = false, defaultValue = "true") boolean debugMode) throws IOException {
@@ -71,6 +71,28 @@ public class NewsFeederController {
         }
 
         return new ResponseEntity<>(new Data(finalList, finalList.size()), HttpStatus.OK);
+    }
+
+    @GetMapping("/latest-issue")
+    public ResponseEntity getLatestIssue() {
+        List<ContentHistory> contentHistories = contentHistoryService.fetchLatestSuccessAndMinimumContentHistory();
+        List<Articles> finalList = getLatestArticlesFromContentHistories(contentHistories);
+        return new ResponseEntity<>(new Data(finalList, finalList.size()), HttpStatus.OK);
+    }
+
+    private List<Articles> getLatestArticlesFromContentHistories(List<ContentHistory> contentHistories) {
+        List<Articles> latestArticles = new ArrayList<>();
+        for (ContentHistory contentHistory : contentHistories) {
+            Articles articles = new Articles();
+            articles.setSubtitle(contentHistory.getSubTitle());
+            articles.setSource(contentHistory.getSource());
+            articles.setTitle(contentHistory.getTitle());
+            articles.setUrl(contentHistory.getUrl());
+            articles.setHeader(contentHistory.getHeader());
+            articles.setTimestamp(contentHistory.getTimeStamp());
+            latestArticles.add(articles);
+        }
+        return latestArticles;
     }
 
     @GetMapping("/specific-user")

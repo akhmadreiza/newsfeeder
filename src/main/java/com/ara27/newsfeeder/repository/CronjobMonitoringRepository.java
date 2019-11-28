@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CronjobMonitoringRepository extends JpaRepository<CronjobMonitoringLog, String> {
     List<CronjobMonitoringLog> findAllByStatus(String status);
+
+    List<CronjobMonitoringLog> findByStatusOrderByCreatedDateDesc(String status);
 }
