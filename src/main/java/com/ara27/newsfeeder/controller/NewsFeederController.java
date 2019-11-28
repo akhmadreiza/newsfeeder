@@ -100,7 +100,7 @@ public class NewsFeederController {
             sendEmail(tirto, detik, emailRecipient);
             Long endMillis = System.currentTimeMillis();
             Long processingTime = endMillis - startMillis;
-            cronjobMonitoringRepository.save(cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "SUCCESS", null, cronjobId)));
+            cronjobMonitoringRepository.save(constructCronjobMonitoring(processingTime, "SUCCESS", null, cronjobId));
         } catch (IOException e) {
             Long endMillis = System.currentTimeMillis();
             Long processingTime = endMillis - startMillis;
@@ -136,7 +136,7 @@ public class NewsFeederController {
 
     private CronjobMonitoringLog constructCronjobMonitoring(Long processingTime, String status, String errorMessage, String cronjobId) {
         CronjobMonitoringLog cronjobMonitoringLog = new CronjobMonitoringLog();
-        cronjobMonitoringLog.setId(UUID.randomUUID().toString());
+        cronjobMonitoringLog.setId(cronjobId);
         cronjobMonitoringLog.setCreatedBy("SYSTEM");
         cronjobMonitoringLog.setCreatedDate(LocalDateTime.now());
         cronjobMonitoringLog.setStatus(status);
