@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,6 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/ngumpuli/v1")
 @EnableAsync
+@CrossOrigin
 public class NewsFeederController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NewsFeederController.class);
