@@ -26,6 +26,28 @@ public class Articles {
     @JsonProperty("timestamp")
     private String timestamp;
 
+    @JsonProperty("baseSource")
+    private String baseSource;
+
+    @JsonProperty("imgUrl")
+    private String imgUrl;
+
+    public String getBaseSource() {
+        return baseSource;
+    }
+
+    public void setBaseSource(String baseSource) {
+        this.baseSource = baseSource;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
     public String getHeader() {
         return header;
     }

@@ -88,6 +88,8 @@ public class NewsFeederController {
             articles.setUrl(contentHistory.getUrl());
             articles.setHeader(contentHistory.getHeader());
             articles.setTimestamp(contentHistory.getTimeStamp());
+            articles.setImgUrl(contentHistory.getImgUrl());
+            articles.setBaseSource(contentHistory.getBaseSource());
             latestArticles.add(articles);
         }
         return latestArticles;
@@ -105,6 +107,7 @@ public class NewsFeederController {
     }
 
     @Scheduled(cron = "${ngumpuli.cron}")
+    @GetMapping("/manual-cron")
     private void sendNewsToEmail() {
         String cronjobId = UUID.randomUUID().toString();
         LOGGER.info("feedme job invoked!");
@@ -147,6 +150,8 @@ public class NewsFeederController {
             contentHistory.setSubTitle(article.getSubtitle());
             contentHistory.setTimeStamp(article.getTimestamp());
             contentHistory.setUrl(article.getUrl());
+            contentHistory.setImgUrl(article.getImgUrl());
+            contentHistory.setBaseSource(article.getBaseSource());
             contentHistories.add(contentHistory);
         }
         contentHistoryRepository.saveAll(contentHistories);

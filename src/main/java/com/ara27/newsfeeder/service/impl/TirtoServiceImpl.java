@@ -55,9 +55,11 @@ public class TirtoServiceImpl implements TirtoService {
             String baseUrl = "https://tirto.id";
             String url = baseUrl + elPopularArticle.select("div a").last().attributes().get("href");
             String articleTitle = elPopularArticle.select("div a").last().select("h1").text();
+            elPopularArticle.select("img").get(0);
 
             Articles articles = new Articles();
             articles.setSource("tirto.id-populer");
+            articles.setBaseSource("tirto.id");
             articles.setUrl(url);
             articles.setTitle(articleTitle);
             constructSubtitle(articles);

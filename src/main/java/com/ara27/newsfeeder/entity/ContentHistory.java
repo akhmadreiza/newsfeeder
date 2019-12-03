@@ -28,6 +28,27 @@ public class ContentHistory {
     LocalDateTime dtUpdated;
     LocalDateTime dtCronRunning;
 
+    @Column(length = 2000)
+    String imgUrl;
+
+    String baseSource;
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getBaseSource() {
+        return baseSource;
+    }
+
+    public void setBaseSource(String baseSource) {
+        this.baseSource = baseSource;
+    }
+
     public String getId() {
         return id;
     }

@@ -90,19 +90,20 @@ public class DetikServiceImpl implements DetikService {
         String articleTimeStamp = content.getElementsByClass("sponsoredby").text();
 
         Articles articles = new Articles();
+        articles.setBaseSource("detik.com");
         articles.setSource(source);
         articles.setTimestamp(articleTimeStamp);
         articles.setUrl(url);
         articles.setTitle(articleTitle);
         try {
-            constructSubtitle(articles);
+            constructSubtitleAndImgUrl(articles);
         } catch (Exception e) {
             LOGGER.error("failed to construct subtitle", e);
         }
         detikArticles.add(articles);
     }
 
-    private void constructSubtitle(Articles articles) throws IOException {
+    private void constructSubtitleAndImgUrl(Articles articles) throws IOException {
         Document detikDetail = null;
 
         Long startMillis = System.currentTimeMillis();
@@ -128,11 +129,29 @@ public class DetikServiceImpl implements DetikService {
         if (lastUpdateEl == null || lastUpdateEl.isEmpty()) {
             lastUpdateEl = detikDetail.getElementsByClass("detail_text");
         }
-        String fullContent = lastUpdateEl.get(0).text();
-        String[] contentSplitByFullStop = fullContent.split("\\.");
-        String firstSentences = contentSplitByFullStop[0];
-        String secondSentences = contentSplitByFullStop[1];
-        String first2Sentences = firstSentences + ". " + secondSentences + ".";
-        articles.setSubtitle(first2Sentences);
+        try {
+            String fullContent = lastUpdateEl.get(0).text();
+            String[] contentSplitByFullStop = fullContent.split("\\.");
+            String firstSentences = contentSplitByFullStop[0];
+            String secondSentences = contentSplitByFullStop[1];
+            String first2Sentences = firstSentences + ". " + secondSentences + ".";
+            articles.setSubtitle(first2Sentences);
+        } catch (Exception e) {
+            LOGGER.error("failed to construct subtitle! ", e);
+        }
+
+        try {
+            constructImgUrl(articles, detikDetail);
+        } catch (Exception e) {
+            LOGGER.error("failed to construct imgUrl! ", e);
+        }
+    }
+
+    public void constructImgUrl(Articles articles, Document detikDetail) {
+        if (!detikDetail.getElementsByClass("pic_artikel").isEmpty()
+                && detikDetail.getElementsByClass("pic_artikel").get(0) != null
+                && !detikDetail.getElementsByClass("pic_artikel").get(0).select("img").isEmpty()) {
+            articles.setImgUrl(detikDetail.getElementsByClass("pic_artikel").get(0).select("img").attr("src"));
+        }
     }
 }
