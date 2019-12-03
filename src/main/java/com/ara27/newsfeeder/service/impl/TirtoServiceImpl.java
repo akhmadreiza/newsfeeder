@@ -3,6 +3,8 @@ package com.ara27.newsfeeder.service.impl;
 import com.ara27.newsfeeder.domain.Articles;
 import com.ara27.newsfeeder.service.TirtoService;
 import com.ara27.newsfeeder.util.NewsFeederUtil;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -76,7 +78,14 @@ public class TirtoServiceImpl implements TirtoService {
         for (int i = 1; i < 4; i++) {
             try {
                 LOGGER.info("Attempt " + i + " to get " + articles.getUrl());
-                tirtoNewsPage = NewsFeederUtil.getConn(articles.getUrl()).get();
+                Connection connection = Jsoup.connect(articles.getUrl());
+                connection.userAgent("Mozilla");
+                connection.header("Accept", "*/*");
+                connection.header("Cache-Control", "no-cache");
+                connection.header("Host", "tirto.id");
+                connection.header("Accept-Encoding", "gzip, deflate");
+                connection.header("Connection", "keep-alive");
+                tirtoNewsPage = connection.get();
                 LOGGER.info("Success get " + articles.getUrl() + " on attempt number " + i + ".");
                 break;
             } catch (SocketTimeoutException e) {
@@ -94,6 +103,13 @@ public class TirtoServiceImpl implements TirtoService {
         String subtitle = tirtoNewsPage.getElementsByClass("italic ringkasan mb-2").isEmpty() ? null :
                 tirtoNewsPage.getElementsByClass("italic ringkasan mb-2").get(0).text();
 
+        String imgUrl = null;
+        try {
+            imgUrl = tirtoNewsPage.getElementsByAttributeValue("property", "og:image").get(0).attributes().get("content");
+        } catch (Exception e) {
+            LOGGER.error("failed to get imgUrl. ", e);
+        }
+        articles.setImgUrl(imgUrl);
         articles.setSubtitle(subtitle);
     }
 
