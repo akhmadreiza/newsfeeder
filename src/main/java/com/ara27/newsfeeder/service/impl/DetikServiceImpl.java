@@ -126,9 +126,23 @@ public class DetikServiceImpl implements DetikService {
         LOGGER.info("time taken to get " + articles.getUrl() + " : " + (endSuccessMillis - startMillis) + "ms");
 
         Elements lastUpdateEl = detikDetail.getElementsByClass("itp_bodycontent detail_text");
-        if (lastUpdateEl == null || lastUpdateEl.isEmpty()) {
+
+        if (detikDetail.getElementsByClass("itp_bodycontent detail_text") != null
+                && !detikDetail.getElementsByClass("itp_bodycontent detail_text").isEmpty()) {
+            LOGGER.info("[constructSubtitleAndImgUrl] element itp_bodycontent detail_text found! source: {}", articles.getSource());
+            lastUpdateEl = detikDetail.getElementsByClass("itp_bodycontent detail_text");
+        } else if (detikDetail.getElementsByClass("detail_text") != null
+                && !detikDetail.getElementsByClass("detail_text").isEmpty()) {
+            LOGGER.info("[constructSubtitleAndImgUrl] element detail_text found! source: {}", articles.getSource());
             lastUpdateEl = detikDetail.getElementsByClass("detail_text");
+        } else if (detikDetail.getElementsByClass("detail__body-text") != null
+                && !detikDetail.getElementsByClass("detail__body-text").isEmpty()) {
+            LOGGER.info("[constructSubtitleAndImgUrl] element detail__body-text found! source: {}", articles.getSource());
+            lastUpdateEl = detikDetail.getElementsByClass("detail__body-text");
+        } else {
+            LOGGER.info("[constructSubtitleAndImgUrl][ERR-SCRAPPING] cannot found any element defined! please fix the logic! source: {}, url: {}", articles.getSource(), articles.getUrl());
         }
+
         try {
             String fullContent = lastUpdateEl.get(0).text();
             String[] contentSplitByFullStop = fullContent.split("\\.");
@@ -137,13 +151,13 @@ public class DetikServiceImpl implements DetikService {
             String first2Sentences = firstSentences + ". " + secondSentences + ".";
             articles.setSubtitle(first2Sentences);
         } catch (Exception e) {
-            LOGGER.error("failed to construct subtitle! ", e);
+            LOGGER.error("[constructSubtitleAndImgUrl] failed to construct subtitle! ", e);
         }
 
         try {
             constructImgUrl(articles, detikDetail);
         } catch (Exception e) {
-            LOGGER.error("failed to construct imgUrl! ", e);
+            LOGGER.error("[constructSubtitleAndImgUrl] failed to construct imgUrl! ", e);
         }
     }
 
@@ -151,7 +165,20 @@ public class DetikServiceImpl implements DetikService {
         if (!detikDetail.getElementsByClass("pic_artikel").isEmpty()
                 && detikDetail.getElementsByClass("pic_artikel").get(0) != null
                 && !detikDetail.getElementsByClass("pic_artikel").get(0).select("img").isEmpty()) {
+            LOGGER.info("[constructImgUrl] element pic_artikel found! source: {}", articles.getSource());
             articles.setImgUrl(detikDetail.getElementsByClass("pic_artikel").get(0).select("img").attr("src"));
+        } else if (!detikDetail.getElementsByClass("detail__media-image").isEmpty()
+                && detikDetail.getElementsByClass("detail__media-image").get(0) != null
+                && !detikDetail.getElementsByClass("detail__media-image").get(0).select("img").isEmpty()) {
+            LOGGER.info("[constructImgUrl] element detail__media-image found! source: {}", articles.getSource());
+            articles.setImgUrl(detikDetail.getElementsByClass("detail__media-image").get(0).select("img").attr("src"));
+        } else if (!detikDetail.getElementsByClass("media_artikel wide").isEmpty()
+                && detikDetail.getElementsByClass("media_artikel wide").get(0) != null
+                && !detikDetail.getElementsByClass("media_artikel wide").get(0).select("img").isEmpty()) {
+            LOGGER.info("[constructImgUrl] element media_artikel wide found! source: {}", articles.getSource());
+            articles.setImgUrl(detikDetail.getElementsByClass("media_artikel wide").get(0).select("img").attr("src"));
+        } else {
+            LOGGER.info("[constructImgUrl][ERR-SCRAPPING] cannot found any element defined! please fix the logic! source: {}, url: {}", articles.getSource(), articles.getUrl());
         }
     }
 }
