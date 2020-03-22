@@ -106,7 +106,7 @@ public class GmailServiceImpl implements GmailService {
                 context.setVariable("detiks", detiks);
                 context.setVariable("subscribeUrl", baseUrl + subscribeUrl + recipient);
                 context.setVariable("unsubscribeUrl", baseUrl + unsubscribeUrl + recipient);
-                context.setVariable("teaser", "Dirangkum dari Detik: " + filterNewsSource(detiks, "detikNews").get(0).getTitle()
+                context.setVariable("teaser", "Dirangkum dari Detik: " + detiks.get(0).getTitle()
                         + " | Dirangkum dari Tirto: " + tirtos.get(0).getTitle());
                 String content = templateEngine.process("mailTemplate", context);
                 messageHelper.setText(content, true);

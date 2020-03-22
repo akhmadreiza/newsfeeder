@@ -21,6 +21,7 @@ public class DetikServiceImpl implements DetikService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DetikServiceImpl.class);
     public static final String DETIK_MOST_POPULAR_URL = "https://www.detik.com/mostpopular";
+    public static final String THREE_DOTS = "...";
 
     @Value("${ngumpuli.max.article.detik}")
     String maxArticleCount;
@@ -49,40 +50,97 @@ public class DetikServiceImpl implements DetikService {
         Long endSuccessMillis = System.currentTimeMillis();
         LOGGER.info("time taken to get " + DETIK_MOST_POPULAR_URL + " : " + (endSuccessMillis - startMillis) + "ms");
 
-        Elements lastUpdateEl = mostPopularPage.getElementsByClass("updates");
-        String lastUpdate = lastUpdateEl.text();
+        Elements elements = mostPopularPage.getElementsByClass("grid-row list-content").get(0).getElementsByClass("list-content__item");
+        for (Element eachElement : elements) {
+            String imgUrl = eachElement.select("img").attr("src");
+            String newsUrl = eachElement.getElementsByClass("media__title").select("a").attr("href");
+            String newsTitle = eachElement.getElementsByClass("media__title").select("a").text();
 
-        Element popularContentDiv = mostPopularPage.getElementById("detikcontent");
-        Elements popularContents = popularContentDiv.getElementsByClass("outer_box");
-
-        Elements detikNews = popularContents.get(0).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
-            addArticles(detikArticles, detikNews.get(i), "detikNews");
-        }
-
-        Elements detikHot = popularContents.get(1).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < 2; i++) {
-            addArticles(detikArticles, detikHot.get(i), "detikHot");
-        }
-
-        Elements detikFinance = popularContents.get(2).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < Integer.parseInt(maxArticleCount); i++) {
-            addArticles(detikArticles, detikFinance.get(i), "detikFinance");
-        }
-
-        Elements sepakbola = popularContents.get(4).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < 2; i++) {
-            addArticles(detikArticles, sepakbola.get(i), "detikSport-sepakbola");
-        }
-
-        Elements detikInet = popularContents.get(5).getElementsByClass("list_box").select("li");
-        for (int i = 0; i < 2; i++) {
-            addArticles(detikArticles, detikInet.get(i), "detikInet");
+            Articles articles = new Articles();
+            articles.setBaseSource("detik.com");
+            articles.setUrl(newsUrl);
+            articles.setTitle(newsTitle);
+            articles.setImgUrl(imgUrl);
+            constructNewsDetailElement(articles);
+            detikArticles.add(articles);
         }
 
         return detikArticles;
     }
 
+    private void constructNewsDetailElement(Articles articles) throws IOException {
+        Document detikDetail = null;
+
+        Long startMillis = System.currentTimeMillis();
+        for (int i = 1; i < 4; i++) {
+            try {
+                LOGGER.info("Attempt " + i + " to get " + articles.getUrl());
+                detikDetail = NewsFeederUtil.getConn(articles.getUrl()).get();
+                LOGGER.info("Success get " + articles.getUrl() + " on attempt number " + i + ".");
+                break;
+            } catch (SocketTimeoutException e) {
+                LOGGER.error("SocketTimeOut on attempt number " + i + ". " + (i < 4 ? "Retrying..." : "Exiting..."));
+                if (i == 3) {
+                    Long endErrorMillis = System.currentTimeMillis();
+                    LOGGER.info("time taken after exception occured: " + (endErrorMillis - startMillis) + "ms");
+                    throw new IOException("Too long waiting for " + articles.getUrl() + " to response.");
+                }
+            }
+        }
+        Long endSuccessMillis = System.currentTimeMillis();
+        LOGGER.info("time taken to get " + articles.getUrl() + " : " + (endSuccessMillis - startMillis) + "ms");
+
+        articles.setTimestamp(getTimeStampElement(detikDetail));
+        articles.setSubtitle(getSubtitle(detikDetail));
+    }
+
+    private String getTimeStampElement(Document detikDetail) {
+        try {
+            return detikDetail.getElementsByClass("detail__date").get(0).text();
+        } catch (Exception e) {
+            LOGGER.error("error get timestamp on class detail__date");
+        }
+
+        try {
+            return detikDetail.getElementsByClass("date").get(0).text();
+        } catch (Exception e) {
+            LOGGER.error("error get timestamp on class date");
+        }
+
+        return null;
+    }
+
+    private String getSubtitle(Document detikDetail) {
+        try {
+            return detikDetail.getElementsByClass("detail__body-text").get(0).text().split("\\.")[0] + THREE_DOTS;
+        } catch (Exception e) {
+            LOGGER.error("error get subtitle on detail__body-text");
+        }
+
+        try {
+            return detikDetail.getElementsByClass("itp_bodycontent detail_text").get(0).text().split("\\.")[0] + THREE_DOTS;
+        } catch (Exception e) {
+            LOGGER.error("error get subtitle on itp_bodycontent detail_text");
+        }
+
+        //wolipop
+        try {
+            return detikDetail.getElementsByClass("itp_bodycontent detail_text group").get(0).text().split("\\.")[0] + THREE_DOTS;
+        } catch (Exception e) {
+            LOGGER.error("error get subtitle on itp_bodycontent detail_text group");
+        }
+
+        //detikTravel
+        try {
+            return detikDetail.getElementsByClass("itp_bodycontent read__content pull-left").get(0).text().split("\\.")[0] + THREE_DOTS;
+        } catch (Exception e) {
+            LOGGER.error("error get subtitle on itp_bodycontent read__content pull-left");
+        }
+
+        return null;
+    }
+
+    @Deprecated
     private void addArticles(List<Articles> detikArticles, Element element, String source) {
         String url = element.select("a").get(0).attributes().get("href");
         Element content = element.getElementsByClass("title_area").get(0);
@@ -103,6 +161,7 @@ public class DetikServiceImpl implements DetikService {
         detikArticles.add(articles);
     }
 
+    @Deprecated
     private void constructSubtitleAndImgUrl(Articles articles) throws IOException {
         Document detikDetail = null;
 
@@ -161,6 +220,7 @@ public class DetikServiceImpl implements DetikService {
         }
     }
 
+    @Deprecated
     public void constructImgUrl(Articles articles, Document detikDetail) {
         if (!detikDetail.getElementsByClass("pic_artikel").isEmpty()
                 && detikDetail.getElementsByClass("pic_artikel").get(0) != null
